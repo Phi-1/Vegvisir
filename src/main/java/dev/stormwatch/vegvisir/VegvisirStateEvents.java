@@ -1,21 +1,17 @@
 package dev.stormwatch.vegvisir;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.event.entity.living.LivingEvent;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.LogicalSide;
 
-import javax.sound.midi.SysexMessage;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class VegvisirStateController {
+public class VegvisirStateEvents {
 
     private static final int ticksPerShelterCheck = 5 * 20;
     private static final Map<UUID, Integer> playerTickCounts = new HashMap<>();
@@ -25,20 +21,17 @@ public class VegvisirStateController {
     private static final int maxVerticalDistanceFromCenter = 5;
 
     @SubscribeEvent
-    public static void onLivingTickEvent(LivingEvent.LivingTickEvent event) {
-        LivingEntity living = event.getEntity();
-        if (!(living instanceof Player) || living.level.isClientSide()) {
-            return;
-        }
-        Player player = (Player) living;
-        int playerTickCount = playerTickCounts.getOrDefault(player.getUUID(), 0);
+    public static void onPlayerTickEvent(TickEvent.PlayerTickEvent event) {
+        if (event.side == LogicalSide.CLIENT) return;
+
+        int playerTickCount = playerTickCounts.getOrDefault(event.player.getUUID(), 0);
         if (playerTickCount >= ticksPerShelterCheck) {
-            boolean sheltered = isSheltered(player);
+            boolean sheltered = isSheltered(event.player);
             System.out.println("Sheltered: " + sheltered);
-            System.out.println("Wet: " + player.isInWaterOrRain());
-            playerTickCounts.put(player.getUUID(), playerTickCount - ticksPerShelterCheck);
+            System.out.println("Wet: " + event.player.isInWaterOrRain());
+            playerTickCounts.put(event.player.getUUID(), playerTickCount - ticksPerShelterCheck);
         } else {
-            playerTickCounts.put(player.getUUID(), ++playerTickCount);
+            playerTickCounts.put(event.player.getUUID(), ++playerTickCount);
         }
     }
 
