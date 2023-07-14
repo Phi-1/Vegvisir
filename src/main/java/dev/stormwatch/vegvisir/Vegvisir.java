@@ -24,7 +24,7 @@ public class Vegvisir {
 
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(VegvisirStateEvents.class);
-        MinecraftForge.EVENT_BUS.register(CapabilityEvents.class);
+        MinecraftForge.EVENT_BUS.register(CampfireEvents.class);
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {

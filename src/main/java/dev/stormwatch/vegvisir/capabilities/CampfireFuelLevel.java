@@ -7,13 +7,14 @@ import net.minecraftforge.common.capabilities.AutoRegisterCapability;
 public class CampfireFuelLevel {
 
     private float fuelLevel = 3;
+    public final float maxFuelLevel = 10f;
 
     public float getFuelLevel() {
         return this.fuelLevel;
     }
 
     public void addFuel(float amount) {
-        this.fuelLevel = Math.min(this.fuelLevel - amount, 10);
+        this.fuelLevel = Math.min(this.fuelLevel + amount, 10);
     }
 
     public void consumeFuel(float amount) {

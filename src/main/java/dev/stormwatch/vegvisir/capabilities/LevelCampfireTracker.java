@@ -8,7 +8,6 @@ import net.minecraft.world.level.block.entity.CampfireBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.AutoRegisterCapability;
 
-import javax.sound.midi.SysexMessage;
 import java.util.ArrayList;
 
 import static net.minecraft.world.level.block.CampfireBlock.LIT;
@@ -19,24 +18,31 @@ public class LevelCampfireTracker {
     private final ArrayList<BlockPos> campfirePositions = new ArrayList<>();
 
     public void trackCampfire(BlockPos pos) {
+        for (BlockPos existingPos : this.campfirePositions) {
+            if (pos.equals(existingPos)) return;
+        }
         this.campfirePositions.add(pos);
     }
 
     public void tickAllCampfires(Level level, float amount) {
-        // TODO: check if campfire is still there, if not remove
+        ArrayList<BlockPos> toRemove = new ArrayList<>();
         for (BlockPos campfirePos : this.campfirePositions) {
-            System.out.println("Ticking campfire at: " + campfirePos);
             BlockEntity campfireBlockEntity = level.getBlockEntity(campfirePos);
-            if (!(campfireBlockEntity instanceof CampfireBlockEntity)) continue;
+            if (!(campfireBlockEntity instanceof CampfireBlockEntity)) {
+                toRemove.add(campfirePos);
+                continue;
+            }
             BlockState campfireState = level.getBlockState(campfirePos);
             if (!campfireState.getValue(LIT)) continue;
             CampfireFuelLevel fuelLevel = campfireBlockEntity.getCapability(CampfireFuelLevelProvider.CAMPFIRE_FUEL_LEVEL).orElse(null);
             if (fuelLevel == null) continue;
-
             fuelLevel.consumeFuel(amount);
             if (fuelLevel.getFuelLevel() <= 0) {
                 level.setBlock(campfirePos, campfireState.setValue(LIT, Boolean.valueOf(false)), 3);
             }
+        }
+        for (BlockPos pos : toRemove) {
+            this.campfirePositions.remove(pos);
         }
     }
 
