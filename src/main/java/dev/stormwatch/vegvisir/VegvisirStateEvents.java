@@ -1,11 +1,14 @@
 package dev.stormwatch.vegvisir;
 
+import dev.stormwatch.vegvisir.data.Temperature;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
+import sereneseasons.api.season.SeasonHelper;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,9 +29,11 @@ public class VegvisirStateEvents {
 
         int playerTickCount = playerTickCounts.getOrDefault(event.player.getUUID(), 0);
         if (playerTickCount >= ticksPerShelterCheck) {
+            System.out.println(Temperature.Altitude.calcAltitudinalTemperatureModifier(event.player.getY()));
             boolean sheltered = isSheltered(event.player);
             System.out.println("Sheltered: " + sheltered);
             System.out.println("Wet: " + event.player.isInWaterOrRain());
+            event.player.displayClientMessage(Component.literal("Season: " + SeasonHelper.getSeasonState(event.player.getLevel()).getSeason()), true);
             playerTickCounts.put(event.player.getUUID(), playerTickCount - ticksPerShelterCheck);
         } else {
             playerTickCounts.put(event.player.getUUID(), ++playerTickCount);
