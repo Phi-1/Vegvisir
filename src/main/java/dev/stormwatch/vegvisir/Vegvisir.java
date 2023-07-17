@@ -23,7 +23,8 @@ public class Vegvisir {
         modEventBus.addListener(this::commonSetup);
 
         MinecraftForge.EVENT_BUS.register(this);
-        MinecraftForge.EVENT_BUS.register(VegvisirStateEvents.class);
+        MinecraftForge.EVENT_BUS.register(CapabilityEvents.class);
+        MinecraftForge.EVENT_BUS.register(EnvironmentEvents.class);
         MinecraftForge.EVENT_BUS.register(CampfireEvents.class);
     }
 

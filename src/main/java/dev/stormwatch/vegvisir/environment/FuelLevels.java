@@ -1,4 +1,4 @@
-package dev.stormwatch.vegvisir.data;
+package dev.stormwatch.vegvisir.environment;
 
 public class FuelLevels {
 
