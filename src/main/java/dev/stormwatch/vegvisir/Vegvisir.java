@@ -1,8 +1,13 @@
 package dev.stormwatch.vegvisir;
 
 import com.mojang.logging.LogUtils;
+import dev.stormwatch.vegvisir.registry.VegvisirEffects;
+import dev.stormwatch.vegvisir.registry.VegvisirItems;
+import dev.stormwatch.vegvisir.registry.VegvisirRegistry;
+import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.CreativeModeTabEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -21,6 +26,9 @@ public class Vegvisir {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
         modEventBus.addListener(this::commonSetup);
+        modEventBus.addListener(this::addCreative);
+        VegvisirItems.register(modEventBus);
+        VegvisirEffects.register(modEventBus);
 
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(CapabilityEvents.class);
@@ -29,6 +37,12 @@ public class Vegvisir {
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
+    }
+
+    private void addCreative(CreativeModeTabEvent.BuildContents event) {
+        if (event.getTab() == CreativeModeTabs.FOOD_AND_DRINKS) {
+            event.accept(VegvisirItems.EYESCREAM);
+        }
     }
 
     // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent

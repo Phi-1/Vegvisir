@@ -1,6 +1,8 @@
 package dev.stormwatch.vegvisir.environment;
 
+import com.google.common.collect.ImmutableMap;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -10,8 +12,12 @@ import sereneseasons.api.season.SeasonHelper;
 public class Temperature {
     // Temperatures are in degrees celsius (roughly)
 
+    public static final double DAY_TEMPERATURE_MODIFIER = 3;
+    public static final double NIGHT_TEMPERATURE_MODIFIER = -5;
+
     public static class Biome {
         // TODO: nether and end
+        // TODO: rivers should use nearest biome
         private static final double scalingFactor = 1.6;
         private static final double conversionFactor = 6;
 
@@ -25,6 +31,7 @@ public class Temperature {
         public static final double SNOW_MODIFIER = -5;
 
         public static double calcWeatherTemperatureModifier(Level level, BlockPos playerPos) {
+            // TODO: use shouldSnow, sereneseasons patches it
             if (level.isRaining()) {
                 if (level.getBiome(playerPos).get().coldEnoughToSnow(playerPos)) {
                     return SNOW_MODIFIER;
@@ -37,6 +44,23 @@ public class Temperature {
             }
             return 0;
         }
+    }
+
+    public static class Seasons {
+        public static final ImmutableMap<Season.SubSeason, Double> SEASON_TEMPERATURE_MODIFIERS = new ImmutableMap.Builder<Season.SubSeason, Double>()
+                .put(Season.SubSeason.EARLY_SPRING, 100.0)
+                .put(Season.SubSeason.MID_SPRING,   100.0)
+                .put(Season.SubSeason.LATE_SPRING,  100.0)
+                .put(Season.SubSeason.EARLY_SUMMER, 100.0)
+                .put(Season.SubSeason.MID_SUMMER,   100.0)
+                .put(Season.SubSeason.LATE_SUMMER,  100.0)
+                .put(Season.SubSeason.EARLY_AUTUMN, 100.0)
+                .put(Season.SubSeason.MID_AUTUMN,   100.0)
+                .put(Season.SubSeason.LATE_AUTUMN,  100.0)
+                .put(Season.SubSeason.EARLY_WINTER, 100.0)
+                .put(Season.SubSeason.MID_WINTER,   100.0)
+                .put(Season.SubSeason.LATE_WINTER,  100.0)
+                .build();
     }
 
     public static class Altitude {
@@ -104,6 +128,28 @@ public class Temperature {
         public static boolean isFire(BlockState block) {
             return block.is(BlockTags.FIRE) ||
                     block.is(BlockTags.CAMPFIRES);
+        }
+
+        public static BlockPos findNearestFire(BlockPos playerPos, Level level, boolean sheltered) {
+            // TODO: check for lava, somewhere
+            BlockPos nearestFire = null;
+            int range = sheltered ? Temperature.Fire.FIRE_RANGE_SHELTERED : Temperature.Fire.FIRE_RANGE_OUTSIDE;
+            // start at top of range y-wise
+            BlockPos pos = new BlockPos(playerPos.getX(), playerPos.getY() + range, playerPos.getZ());
+            for (int y = 0; y < range * 2; y++) {
+                if (Temperature.Fire.isFire(level.getBlockState(pos))) {
+                    if (nearestFire == null) nearestFire = new BlockPos(pos.getX(), pos.getY(), pos.getZ());
+                    else nearestFire = nearestFire.distManhattan(playerPos) < pos.distManhattan(playerPos) ? nearestFire : new BlockPos(pos.getX(), pos.getY(), pos.getZ());
+                }
+                for (BlockPos spiralPos : BlockPos.spiralAround(pos, range, Direction.NORTH, Direction.EAST)) {
+                    if (Temperature.Fire.isFire(level.getBlockState(spiralPos))) {
+                        if (nearestFire == null) nearestFire = new BlockPos(pos.getX(), pos.getY(), pos.getZ());
+                        else nearestFire = nearestFire.distManhattan(playerPos) < pos.distManhattan(playerPos) ? nearestFire : new BlockPos(pos.getX(), pos.getY(), pos.getZ());
+                    }
+                }
+                pos = pos.below();
+            }
+            return nearestFire;
         }
     }
 

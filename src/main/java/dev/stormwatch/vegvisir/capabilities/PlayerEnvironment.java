@@ -6,6 +6,7 @@ public class PlayerEnvironment {
 
     private boolean sheltered = false;
     private boolean wet = false;
+    private boolean nearFire = false;
     private double temperature = 15;
 
     public double getTemperature() {
@@ -20,6 +21,10 @@ public class PlayerEnvironment {
         return wet;
     }
 
+    public boolean isNearFire() {
+        return nearFire;
+    }
+
     public void setTemperature(double temperature) {
         this.temperature = temperature;
     }
@@ -30,6 +35,10 @@ public class PlayerEnvironment {
 
     public void setWet(boolean wet) {
         this.wet = wet;
+    }
+
+    public void setNearFire(boolean nearFire) {
+        this.nearFire = nearFire;
     }
 
     public void saveNBT(CompoundTag nbt) {

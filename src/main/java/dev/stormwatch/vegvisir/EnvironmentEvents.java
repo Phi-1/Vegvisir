@@ -4,10 +4,11 @@ import dev.stormwatch.vegvisir.capabilities.PlayerEnvironment;
 import dev.stormwatch.vegvisir.capabilities.PlayerEnvironmentProvider;
 import dev.stormwatch.vegvisir.environment.Shelter;
 import dev.stormwatch.vegvisir.environment.Temperature;
+import dev.stormwatch.vegvisir.registry.VegvisirEffects;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
@@ -17,6 +18,8 @@ import java.util.Map;
 import java.util.UUID;
 
 public class EnvironmentEvents {
+    // TODO: split neatly into functions, and calculate state at proper points to avoid duplication
+    // TODO: below certain temperature require nearby fire to sleep
 
     private static final int playerTickRate = 1 * 20;
     private static final Map<UUID, Integer> playerTickCounts = new HashMap<>();
@@ -28,32 +31,52 @@ public class EnvironmentEvents {
 
         Player player = event.player;
         int playerTickCount = playerTickCounts.getOrDefault(player.getUUID(), 0);
+        PlayerEnvironment playerEnvironment = player.getCapability(PlayerEnvironmentProvider.PLAYER_ENVIRONMENT).orElse(null);
+        if (playerEnvironment == null) return;
+
+        // Tick wet if next to fire
+        if (playerEnvironment.isWet() && playerEnvironment.isNearFire()) {
+            MobEffectInstance wetEffect = player.getEffect(VegvisirEffects.WET.get());
+            if (wetEffect != null) {
+                wetEffect.tick(player, () -> playerEnvironment.setWet(false));
+            }
+        }
 
         if (playerTickCount >= playerTickRate) {
-            PlayerEnvironment playerEnvironment = player.getCapability(PlayerEnvironmentProvider.PLAYER_ENVIRONMENT).orElse(null);
-            if (playerEnvironment == null) {
-                playerTickCounts.put(player.getUUID(), playerTickCount - playerTickRate);
-                return;
-            }
-
             boolean sheltered = Shelter.isSheltered(player);
             boolean wet = player.isInWaterOrRain();
+            boolean wasSheltered = playerEnvironment.isSheltered();
+            boolean wasWet = playerEnvironment.isWet();
 
-            BlockPos nearbyFire = findNearestFire(player.getOnPos(), player.level, sheltered);
+            MobEffectInstance wetEffect = player.getEffect(VegvisirEffects.WET.get());
+            if (wetEffect == null && wasWet) {
+                playerEnvironment.setWet(false);
+            }
+
+            if (wet && !wasWet) {
+                player.addEffect(new MobEffectInstance(VegvisirEffects.WET.get(), 2400));
+                playerEnvironment.setWet(true);
+            }
+
+            double biomeTemp = Temperature.Biome.convertBiomeTemperature(player.level.getBiome(player.getOnPos()).get().getBaseTemperature());
+
+            BlockPos nearbyFire = Temperature.Fire.findNearestFire(player.getOnPos(), player.level, sheltered);
             double fireTemp = 0;
             if (nearbyFire != null) {
+                playerEnvironment.setNearFire(true);
                 fireTemp = Temperature.Fire.calcFireTemperature(nearbyFire.distManhattan(player.getOnPos()), sheltered);
             }
 
             double altitudeTemp = Temperature.Altitude.calcAltitudinalTemperatureModifier(player.getY());
-
             double weatherTemp = Temperature.Weather.calcWeatherTemperatureModifier(player.level, player.getOnPos());
+            double timeTemp = player.level.isDay() ? Temperature.DAY_TEMPERATURE_MODIFIER : Temperature.NIGHT_TEMPERATURE_MODIFIER;
+            double temp = biomeTemp + fireTemp + altitudeTemp + weatherTemp + timeTemp;
+            // TODO: season, day/night
 
-            boolean wasSheltered = playerEnvironment.isSheltered();
-            boolean wasWet = playerEnvironment.isWet();
+            player.displayClientMessage(Component.literal(temp + " C"), true);
 
-            if (sheltered && !wasSheltered) Feedback.onBecomeSheltered(player);
-            if (wet && !wasWet) Feedback.onBecomeWet(player);
+//            if (sheltered && !wasSheltered) Feedback.onBecomeSheltered(player);
+//            if (wet && !wasWet) Feedback.onBecomeWet(player);
 
             playerTickCounts.put(player.getUUID(), playerTickCount - playerTickRate);
         } else {
@@ -61,32 +84,5 @@ public class EnvironmentEvents {
         }
     }
 
-    private static BlockPos findNearestFire(BlockPos playerPos, Level level, boolean sheltered) {
-        // TODO: check for lava, somewhere
-        BlockPos nearestFire = null;
-        int range = sheltered ? Temperature.Fire.FIRE_RANGE_SHELTERED : Temperature.Fire.FIRE_RANGE_OUTSIDE;
-        // start at top of range y-wise
-        BlockPos pos = new BlockPos(playerPos.getX(), playerPos.getY() + range, playerPos.getZ());
-        for (int y = 0; y < range * 2; y++) {
-            if (Temperature.Fire.isFire(level.getBlockState(pos))) {
-                if (nearestFire == null) nearestFire = new BlockPos(pos.getX(), pos.getY(), pos.getZ());
-                else nearestFire = nearestFire.distManhattan(playerPos) < pos.distManhattan(playerPos) ? nearestFire : new BlockPos(pos.getX(), pos.getY(), pos.getZ());
-            }
-            for (BlockPos spiralPos : BlockPos.spiralAround(pos, range, Direction.NORTH, Direction.EAST)) {
-                if (Temperature.Fire.isFire(level.getBlockState(spiralPos))) {
-                    if (nearestFire == null) nearestFire = new BlockPos(pos.getX(), pos.getY(), pos.getZ());
-                    else nearestFire = nearestFire.distManhattan(playerPos) < pos.distManhattan(playerPos) ? nearestFire : new BlockPos(pos.getX(), pos.getY(), pos.getZ());
-                }
-            }
-            pos = pos.below();
-        }
-        return nearestFire;
-    }
 
-
-
-    // TODO: entity.isInWaterOrRain()
-    // TODO: popup message: you are wet, you are dry again, you are cold, you are sheltered...
-    // TODO: test setTicksFrozen
-    // TODO: check if sereneseasons modifies biomebasetemp, api may not be needed
 }
