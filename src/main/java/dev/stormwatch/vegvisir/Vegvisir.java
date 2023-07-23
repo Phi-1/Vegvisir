@@ -27,6 +27,7 @@ public class Vegvisir {
 
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::addCreative);
+
         VegvisirItems.register(modEventBus);
         VegvisirEffects.register(modEventBus);
 

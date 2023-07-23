@@ -113,14 +113,12 @@ public class Temperature {
         private static final double shelteredB = maxFireTempSheltered - 1 * (shelteredDY / shelteredDX);
 
         public static double calcFireTemperature(int distanceFromFire, boolean sheltered) {
-            if  (distanceFromFire <= 0) {
+            if (distanceFromFire <= 0) {
                 return sheltered ? maxFireTempSheltered : maxFireTempOutside;
             }
             if (sheltered) {
-                if (distanceFromFire > FIRE_RANGE_SHELTERED) return 0;
                 return distanceFromFire * (shelteredDY / shelteredDX) + shelteredB;
             } else {
-                if (distanceFromFire > FIRE_RANGE_OUTSIDE) return 0;
                 return distanceFromFire * (outsideDY / outsideDX) + outsideB;
             }
         }
@@ -137,14 +135,19 @@ public class Temperature {
             // start at top of range y-wise
             BlockPos pos = new BlockPos(playerPos.getX(), playerPos.getY() + range, playerPos.getZ());
             for (int y = 0; y < range * 2; y++) {
-                if (Temperature.Fire.isFire(level.getBlockState(pos))) {
+                // Fire checking happens in a square spiral for efficiency, but should be a diamond
+                int distance = pos.distManhattan(playerPos);
+                if (Temperature.Fire.isFire(level.getBlockState(pos)) && !(distance > (sheltered ? FIRE_RANGE_SHELTERED : FIRE_RANGE_OUTSIDE))) {
                     if (nearestFire == null) nearestFire = new BlockPos(pos.getX(), pos.getY(), pos.getZ());
-                    else nearestFire = nearestFire.distManhattan(playerPos) < pos.distManhattan(playerPos) ? nearestFire : new BlockPos(pos.getX(), pos.getY(), pos.getZ());
+                    else nearestFire = nearestFire.distManhattan(playerPos) < distance ? nearestFire : new BlockPos(pos.getX(), pos.getY(), pos.getZ());
                 }
                 for (BlockPos spiralPos : BlockPos.spiralAround(pos, range, Direction.NORTH, Direction.EAST)) {
+                    // Fire checking happens in a square spiral for efficiency, but should be a diamond
+                    distance = spiralPos.distManhattan(playerPos);
+                    if (distance > (sheltered ? FIRE_RANGE_SHELTERED : FIRE_RANGE_OUTSIDE)) continue;
                     if (Temperature.Fire.isFire(level.getBlockState(spiralPos))) {
-                        if (nearestFire == null) nearestFire = new BlockPos(pos.getX(), pos.getY(), pos.getZ());
-                        else nearestFire = nearestFire.distManhattan(playerPos) < pos.distManhattan(playerPos) ? nearestFire : new BlockPos(pos.getX(), pos.getY(), pos.getZ());
+                        if (nearestFire == null) nearestFire = new BlockPos(spiralPos.getX(), spiralPos.getY(), spiralPos.getZ());
+                        else nearestFire = nearestFire.distManhattan(playerPos) < distance ? nearestFire : new BlockPos(spiralPos.getX(), spiralPos.getY(), spiralPos.getZ());
                     }
                 }
                 pos = pos.below();

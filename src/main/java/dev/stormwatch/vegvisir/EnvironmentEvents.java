@@ -13,16 +13,18 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 
+import javax.sound.midi.SysexMessage;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 public class EnvironmentEvents {
-    // TODO: split neatly into functions, and calculate state at proper points to avoid duplication
     // TODO: below certain temperature require nearby fire to sleep
 
     private static final int playerTickRate = 1 * 20;
     private static final Map<UUID, Integer> playerTickCounts = new HashMap<>();
+
+    private static final int WET_DURATION = 2400;
 
     @SubscribeEvent
     public static void onPlayerTickEvent(TickEvent.PlayerTickEvent event) {
@@ -36,47 +38,32 @@ public class EnvironmentEvents {
 
         // Tick wet if next to fire
         if (playerEnvironment.isWet() && playerEnvironment.isNearFire()) {
+            // FIXME: this is never true, also campfire temps arent working
+            System.out.println("wet near fire");
             MobEffectInstance wetEffect = player.getEffect(VegvisirEffects.WET.get());
             if (wetEffect != null) {
-                wetEffect.tick(player, () -> playerEnvironment.setWet(false));
+                int duration = wetEffect.getDuration();
+                player.addEffect(new MobEffectInstance(VegvisirEffects.WET.get(), duration - 1));
             }
         }
 
         if (playerTickCount >= playerTickRate) {
-            boolean sheltered = Shelter.isSheltered(player);
-            boolean wet = player.isInWaterOrRain();
             boolean wasSheltered = playerEnvironment.isSheltered();
             boolean wasWet = playerEnvironment.isWet();
+            boolean isSheltered = Shelter.isSheltered(player);
+            boolean isWet = player.isInWaterOrRain();
 
-            MobEffectInstance wetEffect = player.getEffect(VegvisirEffects.WET.get());
-            if (wetEffect == null && wasWet) {
-                playerEnvironment.setWet(false);
-            }
+            processWetStatus(player, wasWet, isWet, playerEnvironment);
 
-            if (wet && !wasWet) {
-                player.addEffect(new MobEffectInstance(VegvisirEffects.WET.get(), 2400));
-                playerEnvironment.setWet(true);
-            }
+            BlockPos nearbyFire = Temperature.Fire.findNearestFire(player.blockPosition(), player.level, isSheltered);
+            if (nearbyFire != null) playerEnvironment.setNearFire(true);
+            else playerEnvironment.setNearFire(false);
 
-            double biomeTemp = Temperature.Biome.convertBiomeTemperature(player.level.getBiome(player.getOnPos()).get().getBaseTemperature());
+            double playerTemp = calcPlayerTemperature(player, nearbyFire, isSheltered);
+            playerEnvironment.setTemperature(playerTemp);
 
-            BlockPos nearbyFire = Temperature.Fire.findNearestFire(player.getOnPos(), player.level, sheltered);
-            double fireTemp = 0;
-            if (nearbyFire != null) {
-                playerEnvironment.setNearFire(true);
-                fireTemp = Temperature.Fire.calcFireTemperature(nearbyFire.distManhattan(player.getOnPos()), sheltered);
-            }
-
-            double altitudeTemp = Temperature.Altitude.calcAltitudinalTemperatureModifier(player.getY());
-            double weatherTemp = Temperature.Weather.calcWeatherTemperatureModifier(player.level, player.getOnPos());
-            double timeTemp = player.level.isDay() ? Temperature.DAY_TEMPERATURE_MODIFIER : Temperature.NIGHT_TEMPERATURE_MODIFIER;
-            double temp = biomeTemp + fireTemp + altitudeTemp + weatherTemp + timeTemp;
-            // TODO: season, day/night
-
-            player.displayClientMessage(Component.literal(temp + " C"), true);
-
-//            if (sheltered && !wasSheltered) Feedback.onBecomeSheltered(player);
-//            if (wet && !wasWet) Feedback.onBecomeWet(player);
+            if (isSheltered && !wasSheltered) Feedback.onBecomeSheltered(player);
+            if (isWet && !wasWet) Feedback.onBecomeWet(player);
 
             playerTickCounts.put(player.getUUID(), playerTickCount - playerTickRate);
         } else {
@@ -84,5 +71,34 @@ public class EnvironmentEvents {
         }
     }
 
+    private static void processWetStatus(Player player, boolean wasWet, boolean isWet, PlayerEnvironment playerEnvironment) {
+        MobEffectInstance wetEffect = player.getEffect(VegvisirEffects.WET.get());
+        if (wetEffect == null) {
+            if (wasWet && !isWet) playerEnvironment.setWet(false);
+            if (isWet) {
+                player.addEffect(new MobEffectInstance(VegvisirEffects.WET.get(), WET_DURATION));
+                playerEnvironment.setWet(true);
+            }
+        } else {
+            if (isWet) player.addEffect(new MobEffectInstance(VegvisirEffects.WET.get(), WET_DURATION));
+        }
+    }
+
+    private static double calcPlayerTemperature(Player player, BlockPos nearbyFire, boolean sheltered) {
+        double biomeTemp = Temperature.Biome.convertBiomeTemperature(player.level.getBiome(player.getOnPos()).get().getBaseTemperature());
+        double altitudeTemp = Temperature.Altitude.calcAltitudinalTemperatureModifier(player.getY());
+        double weatherTemp = Temperature.Weather.calcWeatherTemperatureModifier(player.level, player.getOnPos());
+        // TODO: season
+        double timeTemp = player.level.isDay() ? Temperature.DAY_TEMPERATURE_MODIFIER : Temperature.NIGHT_TEMPERATURE_MODIFIER;
+        double fireTemp = 0;
+        if (nearbyFire != null) {
+            fireTemp = Temperature.Fire.calcFireTemperature(nearbyFire.distManhattan(player.blockPosition()), sheltered);
+        }
+
+        double temp = biomeTemp + fireTemp + altitudeTemp + weatherTemp + timeTemp;
+
+        player.displayClientMessage(Component.literal(temp + " C"), true);
+        return temp;
+    }
 
 }
