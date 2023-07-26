@@ -1,0 +1,13 @@
+{
+    "replace": false,
+    "values": [
+        "minecraft:carrot",
+        "minecraft:golden_carrot",
+        "minecraft:pumpkin_pie",
+        "minecraft:mushroom_stew",
+        "minecraft:dried_kelp",
+        "minecraft:beetroot",
+        "minecraft:beetroot_soup",
+        "minecraft:rabbit_stew"
+    ]
+}

@@ -1,0 +1,13 @@
+{
+    "replace": false,
+    "values": [
+        "minecraft:bread",
+        "minecraft:potato",
+        "minecraft:baked_potato",
+        "minecraft:poisonous_potato",
+        "minecraft:cake",
+        "minecraft:cookie",
+        "minecraft:pumpkin_pie",
+        "minecraft:rabbit_stew"
+    ]
+}

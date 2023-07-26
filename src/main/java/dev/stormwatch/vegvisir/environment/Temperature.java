@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import sereneseasons.api.season.Season;
@@ -13,7 +14,7 @@ public class Temperature {
     // Temperatures are in degrees celsius (roughly)
 
     public static final double DAY_TEMPERATURE_MODIFIER = 3;
-    public static final double NIGHT_TEMPERATURE_MODIFIER = -5;
+    public static final double NIGHT_TEMPERATURE_MODIFIER = -3;
 
     public static class Biome {
         // TODO: nether and end
@@ -47,25 +48,36 @@ public class Temperature {
     }
 
     public static class Seasons {
-        public static final ImmutableMap<Season.SubSeason, Double> SEASON_TEMPERATURE_MODIFIERS = new ImmutableMap.Builder<Season.SubSeason, Double>()
-                .put(Season.SubSeason.EARLY_SPRING, 100.0)
-                .put(Season.SubSeason.MID_SPRING,   100.0)
-                .put(Season.SubSeason.LATE_SPRING,  100.0)
-                .put(Season.SubSeason.EARLY_SUMMER, 100.0)
-                .put(Season.SubSeason.MID_SUMMER,   100.0)
-                .put(Season.SubSeason.LATE_SUMMER,  100.0)
-                .put(Season.SubSeason.EARLY_AUTUMN, 100.0)
-                .put(Season.SubSeason.MID_AUTUMN,   100.0)
-                .put(Season.SubSeason.LATE_AUTUMN,  100.0)
-                .put(Season.SubSeason.EARLY_WINTER, 100.0)
-                .put(Season.SubSeason.MID_WINTER,   100.0)
-                .put(Season.SubSeason.LATE_WINTER,  100.0)
+        private static final ImmutableMap<Season.SubSeason, Double> SEASON_TEMPERATURE_MODIFIERS = new ImmutableMap.Builder<Season.SubSeason, Double>()
+                .put(Season.SubSeason.EARLY_SPRING, -3.0)
+                .put(Season.SubSeason.MID_SPRING,   0.0)
+                .put(Season.SubSeason.LATE_SPRING,  4.0)
+                .put(Season.SubSeason.EARLY_SUMMER, 10.0)
+                .put(Season.SubSeason.MID_SUMMER,   12.0)
+                .put(Season.SubSeason.LATE_SUMMER,  10.0)
+                .put(Season.SubSeason.EARLY_AUTUMN, 4.0)
+                .put(Season.SubSeason.MID_AUTUMN,   0.0)
+                .put(Season.SubSeason.LATE_AUTUMN,  -3.0)
+                .put(Season.SubSeason.EARLY_WINTER, -8.0)
+                .put(Season.SubSeason.MID_WINTER,   -10.0)
+                .put(Season.SubSeason.LATE_WINTER,  -8.0)
                 .build();
+
+        private static final double TROPICAL_TEMPERATURE_FACTOR = 0.7;
+
+        public static double getSeasonalTemperatureModifier(Level level, BlockPos at) {
+            Season.SubSeason season = SeasonHelper.getSeasonState(level).getSubSeason();
+            Double temp = SEASON_TEMPERATURE_MODIFIERS.get(season);
+            if (temp == null) return 0;
+            if (SeasonHelper.usesTropicalSeasons(level.getBiome(at))) {
+                temp *= TROPICAL_TEMPERATURE_FACTOR;
+            }
+            return temp;
+        }
     }
 
     public static class Altitude {
         // TODO: add slight curve to temp func, temp should increase faster going down from neutral, and decrease slower going up from neutral
-        // TODO: rework temp values once temp system is flushed out
         private static final int yAtNeutralTemp = 64;
         private static final int yAtMaxTemp = 0;
         private static final int yAtMinTemp = 320;
@@ -128,7 +140,7 @@ public class Temperature {
                     block.is(BlockTags.CAMPFIRES);
         }
 
-        public static BlockPos findNearestFire(BlockPos playerPos, Level level, boolean sheltered) {
+        public static NearbyFireInfo findNearestFire(BlockPos playerPos, Level level, boolean sheltered) {
             // TODO: check for lava, somewhere
             BlockPos nearestFire = null;
             int range = sheltered ? Temperature.Fire.FIRE_RANGE_SHELTERED : Temperature.Fire.FIRE_RANGE_OUTSIDE;
@@ -152,7 +164,19 @@ public class Temperature {
                 }
                 pos = pos.below();
             }
-            return nearestFire;
+            // TODO: lava checkign
+            return new NearbyFireInfo(nearestFire, false);
+        }
+
+        public static class NearbyFireInfo {
+
+            public BlockPos nearbyFire;
+            public boolean nearLava;
+
+            private NearbyFireInfo(BlockPos nearbyFire, boolean nearLava) {
+                this.nearbyFire = nearbyFire;
+                this.nearLava = nearLava;
+            }
         }
     }
 

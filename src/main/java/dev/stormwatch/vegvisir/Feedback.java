@@ -13,4 +13,8 @@ public class Feedback {
         player.displayClientMessage(Component.literal("You are wet"), true);
     }
 
+    public static void onBecomeDry(Player player) {
+        player.displayClientMessage(Component.literal("You are dry again"), true);
+    }
+
 }
