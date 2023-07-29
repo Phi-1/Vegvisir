@@ -2,11 +2,16 @@ package dev.stormwatch.vegvisir;
 
 import com.mojang.logging.LogUtils;
 import dev.stormwatch.vegvisir.environment.Nutrition;
+import dev.stormwatch.vegvisir.registry.VegvisirBlockEntityTypes;
+import dev.stormwatch.vegvisir.registry.VegvisirBlocks;
 import dev.stormwatch.vegvisir.registry.VegvisirEffects;
 import dev.stormwatch.vegvisir.registry.VegvisirItems;
+import dev.stormwatch.vegvisir.renderers.OrbRenderer;
+import dev.stormwatch.vegvisir.renderers.SpinningWheelRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.CreativeModeTabEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
@@ -17,6 +22,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
+import software.bernie.geckolib.GeckoLib;
 
 import java.util.EnumSet;
 
@@ -32,8 +38,12 @@ public class Vegvisir {
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::addCreative);
 
+        GeckoLib.initialize();
+
         VegvisirItems.register(modEventBus);
         VegvisirEffects.register(modEventBus);
+        VegvisirBlocks.register(modEventBus);
+        VegvisirBlockEntityTypes.register(modEventBus);
 
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(CapabilityEvents.class);
@@ -55,11 +65,27 @@ public class Vegvisir {
             event.accept(VegvisirItems.WOOL_SWEATER);
             event.accept(VegvisirItems.KNIT_CAP);
         }
+        if (event.getTab() == CreativeModeTabs.FUNCTIONAL_BLOCKS) {
+            event.accept(VegvisirBlocks.SPINNING_WHEEL_BLOCK);
+        }
+    }
+
+    @Mod.EventBusSubscriber(modid = MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+    public static class ClientSetupEvents {
+        @SubscribeEvent
+        public static void onClientSetup(FMLClientSetupEvent event) {
+
+        }
+        @SubscribeEvent
+        public static void registerRenderers(final EntityRenderersEvent.RegisterRenderers event) {
+            event.registerBlockEntityRenderer(VegvisirBlockEntityTypes.SPINNING_WHEEL_BLOCK_ENTITY.get(), SpinningWheelRenderer::new);
+            event.registerBlockEntityRenderer(VegvisirBlockEntityTypes.ORB_BLOCK_ENTITY.get(), OrbRenderer::new);
+        }
     }
 
     // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
     @Mod.EventBusSubscriber(modid = MOD_ID, value = Dist.CLIENT)
-    public static class ClientModEvents {
+    public static class ClientEvents {
 
         @SubscribeEvent
         public static void addNutritionTooltips(ItemTooltipEvent event) {

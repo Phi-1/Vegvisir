@@ -60,6 +60,12 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed mollis lacinia magn
     ordering="NONE"
     # Side this dependency is applied on - BOTH, CLIENT or SERVER
     side="BOTH"
+[[dependencies.vegvisir]]
+    modId="geckolib"
+    mandatory=true
+    versionRange="[4.1.2,)"
+    ordering="NONE"
+    side="BOTH"
 # Here's another dependency
 [[dependencies.vegvisir]]
     modId="minecraft"
