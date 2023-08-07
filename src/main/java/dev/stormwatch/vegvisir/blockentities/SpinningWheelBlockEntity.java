@@ -14,7 +14,7 @@ import software.bernie.geckolib.util.RenderUtils;
 
 public class SpinningWheelBlockEntity extends BlockEntity implements GeoBlockEntity {
     // TODO: dont forget this.setChanged when changing data that needs to be saved to NBT
-    protected static final RawAnimation SPIN_ANIMATION = RawAnimation.begin().then("animation.model.spin", Animation.LoopType.LOOP);
+    protected static final RawAnimation SPIN_ANIMATION = RawAnimation.begin().then("animation.spinningwheel.spin", Animation.LoopType.LOOP);
 
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 

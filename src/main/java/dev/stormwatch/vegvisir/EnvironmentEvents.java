@@ -3,6 +3,7 @@ package dev.stormwatch.vegvisir;
 import dev.stormwatch.vegvisir.capabilities.PlayerEnvironment;
 import dev.stormwatch.vegvisir.capabilities.PlayerEnvironmentProvider;
 import dev.stormwatch.vegvisir.environment.Shelter;
+import dev.stormwatch.vegvisir.environment.StatModifiers;
 import dev.stormwatch.vegvisir.environment.Temperature;
 import dev.stormwatch.vegvisir.registry.VegvisirEffects;
 import net.minecraft.core.BlockPos;
@@ -65,7 +66,7 @@ public class EnvironmentEvents {
             playerEnvironment.setTemperature(playerTemp);
 
             if (isSheltered && !wasSheltered) Feedback.onBecomeSheltered(player);
-            // TODO: this spams you are wet in rain
+            // FIXME: this spams you are wet in rain
             if (isWet && !wasWet) Feedback.onBecomeWet(player);
 
             playerTickCounts.put(player.getUUID(), playerTickCount - playerTickRate);

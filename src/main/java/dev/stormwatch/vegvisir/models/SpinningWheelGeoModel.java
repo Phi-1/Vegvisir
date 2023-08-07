@@ -8,7 +8,7 @@ import software.bernie.geckolib.model.GeoModel;
 public class SpinningWheelGeoModel extends GeoModel {
     @Override
     public ResourceLocation getModelResource(GeoAnimatable animatable) {
-        return new ResourceLocation(Vegvisir.MOD_ID, "geo/spinningwheel.geo.json");
+        return new ResourceLocation(Vegvisir.MOD_ID, "geo/spinningwheel2.geo.json");
     }
 
     @Override

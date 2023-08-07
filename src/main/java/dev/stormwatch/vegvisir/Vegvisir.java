@@ -1,6 +1,7 @@
 package dev.stormwatch.vegvisir;
 
 import com.mojang.logging.LogUtils;
+import dev.stormwatch.vegvisir.effects.WetEffect;
 import dev.stormwatch.vegvisir.environment.Nutrition;
 import dev.stormwatch.vegvisir.registry.VegvisirBlockEntityTypes;
 import dev.stormwatch.vegvisir.registry.VegvisirBlocks;
@@ -46,6 +47,7 @@ public class Vegvisir {
         VegvisirBlockEntityTypes.register(modEventBus);
 
         MinecraftForge.EVENT_BUS.register(this);
+        MinecraftForge.EVENT_BUS.register(WetEffect.class);
         MinecraftForge.EVENT_BUS.register(CapabilityEvents.class);
         MinecraftForge.EVENT_BUS.register(EnvironmentEvents.class);
         MinecraftForge.EVENT_BUS.register(NutritionEvents.class);

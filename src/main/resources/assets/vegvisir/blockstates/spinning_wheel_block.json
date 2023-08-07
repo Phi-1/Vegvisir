@@ -1,0 +1,5 @@
+{
+    "variants": {
+        "": { "model": "vegvisir:block/spinning_wheel_block" }
+    }
+}

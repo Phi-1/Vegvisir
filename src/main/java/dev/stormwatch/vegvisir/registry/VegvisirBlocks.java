@@ -20,11 +20,10 @@ public class VegvisirBlocks {
 
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, Vegvisir.MOD_ID);
 
-    public static final RegistryObject<Block> SPINNING_WHEEL_BLOCK = registerBlock("spinning_wheel_block",
+    public static final RegistryObject<Block> SPINNING_WHEEL_BLOCK = registerBlock("spinning_wheel",
             () -> new SpinningWheelBlock(BlockBehaviour.Properties.of(Material.WOOD)
                     .strength(2f, 3f)
-                    .noOcclusion()
-                    .lightLevel((BlockState state) -> 7))); // TODO: model takes up whole block so its dark
+                    .noOcclusion()));
 
     public static final RegistryObject<Block> ORB_BLOCK = registerBlock("orb_block",
             () -> new OrbBlock(BlockBehaviour.Properties.of(Material.WOOD)
