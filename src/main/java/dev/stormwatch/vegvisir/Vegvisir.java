@@ -10,6 +10,7 @@ import dev.stormwatch.vegvisir.registry.VegvisirItems;
 import dev.stormwatch.vegvisir.renderers.OrbRenderer;
 import dev.stormwatch.vegvisir.renderers.SpinningWheelRenderer;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
@@ -18,12 +19,14 @@ import net.minecraftforge.event.CreativeModeTabEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
 import software.bernie.geckolib.GeckoLib;
+import top.theillusivec4.curios.api.SlotTypeMessage;
 
 import java.util.EnumSet;
 
@@ -40,6 +43,7 @@ public class Vegvisir {
         modEventBus.addListener(this::addCreative);
 
         GeckoLib.initialize();
+        registerCuriosSlots();
 
         VegvisirItems.register(modEventBus);
         VegvisirEffects.register(modEventBus);
@@ -70,6 +74,15 @@ public class Vegvisir {
         if (event.getTab() == CreativeModeTabs.FUNCTIONAL_BLOCKS) {
             event.accept(VegvisirBlocks.SPINNING_WHEEL_BLOCK);
         }
+    }
+
+    private void registerCuriosSlots() {
+        InterModComms.sendTo("curios", SlotTypeMessage.REGISTER_TYPE,
+                () -> new SlotTypeMessage.Builder("sweater")
+                        .icon(new ResourceLocation(Vegvisir.MOD_ID, "slot/sweater"))
+                        .priority(10)
+                        .size(1)
+                        .build());
     }
 
     @Mod.EventBusSubscriber(modid = MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)

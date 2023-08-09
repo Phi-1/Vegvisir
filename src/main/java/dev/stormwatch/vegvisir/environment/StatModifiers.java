@@ -27,4 +27,17 @@ public class StatModifiers {
         instance.addTransientModifier(new AttributeModifier(modifierUUID, modifierName, value, operation));
     }
 
+    public static class Temperature {
+
+        // buffs/debuffs movespeed, attack damage, max health, damage taken
+
+        public static void setTemperatureModifiers(Player player, double temperature) {
+
+        }
+    }
+
+    public static class Nutrition {
+        // buffs/debuffs attack damage, attack speed, max health, movespeed
+    }
+
 }

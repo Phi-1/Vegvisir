@@ -66,6 +66,12 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed mollis lacinia magn
     versionRange="[4.1.2,)"
     ordering="NONE"
     side="BOTH"
+[[dependencies.vegvisir]]
+    modId="curios"
+    mandatory=true
+    versionRange="[1.19.4-5.1.5.3,)"
+    ordering="NONE"
+    side="BOTH"
 # Here's another dependency
 [[dependencies.vegvisir]]
     modId="minecraft"

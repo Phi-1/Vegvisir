@@ -9,5 +9,7 @@
     "vegvisir.tooltip.nutrition.fish": "§cFish",
     "vegvisir.tooltip.nutrition.vegetable": "§2Vegetable",
     "vegvisir.tooltip.nutrition.fruit": "§dFruit",
-    "vegvisir.tooltip.nutrition.starch": "§6Starch"
+    "vegvisir.tooltip.nutrition.starch": "§6Starch",
+
+    "curios.identifier.sweater": "Sweater"
 }
