@@ -1,6 +1,7 @@
 package dev.stormwatch.vegvisir;
 
 import com.mojang.logging.LogUtils;
+import dev.stormwatch.vegvisir.datagen.VegvisirRecipeProvider;
 import dev.stormwatch.vegvisir.effects.WetEffect;
 import dev.stormwatch.vegvisir.environment.Nutrition;
 import dev.stormwatch.vegvisir.registry.VegvisirBlockEntityTypes;
@@ -9,12 +10,15 @@ import dev.stormwatch.vegvisir.registry.VegvisirEffects;
 import dev.stormwatch.vegvisir.registry.VegvisirItems;
 import dev.stormwatch.vegvisir.renderers.OrbRenderer;
 import dev.stormwatch.vegvisir.renderers.SpinningWheelRenderer;
+import net.minecraft.data.PackOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.event.CreativeModeTabEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -28,6 +32,8 @@ import org.slf4j.Logger;
 import software.bernie.geckolib.GeckoLib;
 import top.theillusivec4.curios.api.SlotTypeMessage;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.EnumSet;
 
 // The value here should match an entry in the META-INF/mods.toml file
@@ -39,6 +45,7 @@ public class Vegvisir {
     public Vegvisir() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
+        modEventBus.addListener(this::gatherData);
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::addCreative);
 
@@ -56,8 +63,14 @@ public class Vegvisir {
         MinecraftForge.EVENT_BUS.register(EnvironmentEvents.class);
         MinecraftForge.EVENT_BUS.register(NutritionEvents.class);
         MinecraftForge.EVENT_BUS.register(CampfireEvents.class);
+    }
 
-        // TODO: tooltip event for food groups
+    private void gatherData(GatherDataEvent event) {
+        PackOutput packOutput = event.getGenerator().getPackOutput();
+        event.getGenerator().addProvider(
+                event.includeServer(),
+                new VegvisirRecipeProvider(packOutput)
+        );
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
@@ -83,6 +96,12 @@ public class Vegvisir {
                         .priority(10)
                         .size(1)
                         .build());
+        InterModComms.sendTo("curios", SlotTypeMessage.REGISTER_TYPE,
+                () -> new SlotTypeMessage.Builder("socks")
+                        .icon(new ResourceLocation(Vegvisir.MOD_ID, "slot/socks"))
+                        .priority(10)
+                        .size(1)
+                        .build());
     }
 
     @Mod.EventBusSubscriber(modid = MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
@@ -98,9 +117,8 @@ public class Vegvisir {
         }
     }
 
-    // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
     @Mod.EventBusSubscriber(modid = MOD_ID, value = Dist.CLIENT)
-    public static class ClientEvents {
+    public static class ClientForgeEvents {
 
         @SubscribeEvent
         public static void addNutritionTooltips(ItemTooltipEvent event) {

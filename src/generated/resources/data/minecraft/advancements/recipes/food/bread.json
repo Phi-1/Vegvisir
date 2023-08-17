@@ -1,0 +1,28 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "minecraft:bread"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "place_furnace": {
+      "conditions": {
+        "block": "minecraft:furnace"
+      },
+      "trigger": "minecraft:placed_block"
+    }
+  },
+  "requirements": [
+    [
+      "place_furnace",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "minecraft:bread"
+    ]
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "item": "minecraft:water_bucket"
+    },
+    "W": {
+      "item": "minecraft:wheat"
+    }
+  },
+  "pattern": [
+    "WWW",
+    "WBW",
+    "WWW"
+  ],
+  "result": {
+    "count": 8,
+    "item": "vegvisir:dough"
+  },
+  "show_notification": true
+}

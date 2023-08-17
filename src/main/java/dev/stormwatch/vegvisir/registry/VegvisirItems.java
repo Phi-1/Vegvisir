@@ -16,14 +16,14 @@ public class VegvisirItems {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Vegvisir.MOD_ID);
 
     // Armor
-    // TODO: different color beanies?
     public static final RegistryObject<Item> KNIT_CAP = ITEMS.register("knit_cap",
             () -> new ArmorItem(VegvisirArmorMaterials.WOOL, ArmorItem.Type.HELMET, new Item.Properties().durability(40)));
-    // TODO: different color sweaters with different patterns, fuck dyeable armor
     public static final RegistryObject<Item> WOOL_SWEATER = ITEMS.register("wool_sweater",
             () -> new ArmorItem(VegvisirArmorMaterials.WOOL, ArmorItem.Type.CHESTPLATE, new Item.Properties().durability(80)));
 
     // Food
+    public static final RegistryObject<Item> DOUGH = ITEMS.register("dough",
+            () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> EYESCREAM = ITEMS.register("eyescream",
             () -> new Item(new Item.Properties().food(new FoodProperties.Builder().build())));
 

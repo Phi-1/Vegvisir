@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:smelting",
+  "category": "food",
+  "cookingtime": 400,
+  "experience": 10.0,
+  "ingredient": {
+    "item": "vegvisir:dough"
+  },
+  "result": "minecraft:bread"
+}

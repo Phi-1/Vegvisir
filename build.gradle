@@ -156,7 +156,7 @@ dependencies {
     // Real mod deobf dependency examples - these get remapped to your current mappings
     // implementation fg.deobf("com.tterrag.registrate:Registrate:MC${mc_version}-${registrate_version}") // Adds registrate as a dependency
 
-    // fg.deobf possibly caused injection error with sereneseasons, this is a deobfuscated jar from serene seasons. click on file and scroll down on curseforge
+    // fg.deobf possibly caused injection error with sereneseasons, this is a deobfuscated jar from serene seasons itself. On curseforge, click on file and scroll down
     implementation "curse.maven:sereneseasons-291874:4577600"
     implementation fg.deobf('software.bernie.geckolib:geckolib-forge-1.19.4:4.2')
     runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.19.4-5.1.5.3")

@@ -1,7 +1,10 @@
 {
+    "item.vegvisir.dough": "Dough",
     "item.vegvisir.eyescream": "Eyescream",
 
     "item.vegvisir.wool_sweater": "Wool Sweater",
+
+    "block.vegvisir.spinning_wheel": "Spinning Wheel",
 
     "effect.vegvisir.effect_wet": "Wet",
 
@@ -11,5 +14,6 @@
     "vegvisir.tooltip.nutrition.fruit": "§dFruit",
     "vegvisir.tooltip.nutrition.starch": "§6Starch",
 
-    "curios.identifier.sweater": "Sweater"
+    "curios.identifier.sweater": "Sweater",
+    "curios.identifier.socks": "Socks"
 }

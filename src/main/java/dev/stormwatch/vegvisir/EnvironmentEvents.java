@@ -65,6 +65,7 @@ public class EnvironmentEvents {
             double playerTemp = calcPlayerTemperature(player, fireInfo.nearbyFire, isSheltered);
             playerEnvironment.setTemperature(playerTemp);
 
+            // FIXME: this spams you are sheltered
             if (isSheltered && !wasSheltered) Feedback.onBecomeSheltered(player);
             // FIXME: this spams you are wet in rain
             if (isWet && !wasWet) Feedback.onBecomeWet(player);
