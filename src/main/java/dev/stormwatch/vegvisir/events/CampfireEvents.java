@@ -1,4 +1,4 @@
-package dev.stormwatch.vegvisir;
+package dev.stormwatch.vegvisir.events;
 
 import dev.stormwatch.vegvisir.capabilities.CampfireFuelLevel;
 import dev.stormwatch.vegvisir.capabilities.CampfireFuelLevelProvider;

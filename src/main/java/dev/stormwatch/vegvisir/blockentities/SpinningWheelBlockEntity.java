@@ -1,6 +1,8 @@
 package dev.stormwatch.vegvisir.blockentities;
 
 import dev.stormwatch.vegvisir.blocks.SpinningWheelBlock;
+import dev.stormwatch.vegvisir.networking.VegvisirNetworking;
+import dev.stormwatch.vegvisir.networking.packets.SpinningWheelProcessingS2CPacket;
 import dev.stormwatch.vegvisir.registry.VegvisirBlockEntityTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -31,6 +33,7 @@ public class SpinningWheelBlockEntity extends BlockEntity implements GeoBlockEnt
 
     public void addWool() {
         this.storedWool++;
+        this.setProcessing(true, true); // TODO: Temp
         this.setChanged();
     }
 
@@ -38,9 +41,11 @@ public class SpinningWheelBlockEntity extends BlockEntity implements GeoBlockEnt
         return this.processing;
     }
 
-    public void setProcessing(boolean processing) {
+    public void setProcessing(boolean processing, boolean sendUpdate) {
         this.processing = processing;
-        // TODO: send packet to client
+        if (sendUpdate) {
+            VegvisirNetworking.sendToAllConnectedClients(new SpinningWheelProcessingS2CPacket(processing, this.worldPosition));
+        }
     }
 
     @Override
@@ -72,7 +77,6 @@ public class SpinningWheelBlockEntity extends BlockEntity implements GeoBlockEnt
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
         controllers.add(new AnimationController<>(this, state -> {
-            // TODO: get processing from server, because I think this only gets called on client
             if (state.getAnimatable().isProcessing()) {
                 return state.setAndContinue(SPIN_ANIMATION);
             }

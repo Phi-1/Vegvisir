@@ -1,10 +1,14 @@
 package dev.stormwatch.vegvisir.capabilities;
 
 import dev.stormwatch.vegvisir.environment.Nutrition;
+import net.minecraft.nbt.CompoundTag;
 
 import java.util.EnumMap;
 
 public class PlayerNutrition {
+
+    public static PlayerNutrition EMPTY = new PlayerNutrition();
+
     // full value in a food group lasts 3 days
     private final int MIN_NUTRITION = 0;
     private final int MAX_NUTRITION = 100;
@@ -35,6 +39,22 @@ public class PlayerNutrition {
         return (double) nutritionTotal / nutritionCapacity;
     }
 
-    // TODO: reload on player death
+    public void saveNBT(CompoundTag nbt) {
+        for (Nutrition.NutritionGroup group : Nutrition.NutritionGroup.values()) {
+            nbt.putInt(group.name(), this.nutritionValues.getOrDefault(group, DEFAULT_NUTRITION));
+        }
+    }
+
+    public void loadNBT(CompoundTag nbt) {
+        for (Nutrition.NutritionGroup group : Nutrition.NutritionGroup.values()) {
+            this.nutritionValues.put(group, nbt.getInt(group.name()));
+        }
+    }
+
+    public void copyFrom(PlayerNutrition playerNutrition) {
+        for (Nutrition.NutritionGroup group : Nutrition.NutritionGroup.values()) {
+            this.nutritionValues.put(group, playerNutrition.getPlayerNutrition(group));
+        }
+    }
 
 }

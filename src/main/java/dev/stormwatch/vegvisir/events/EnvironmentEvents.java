@@ -1,9 +1,9 @@
-package dev.stormwatch.vegvisir;
+package dev.stormwatch.vegvisir.events;
 
+import dev.stormwatch.vegvisir.Feedback;
 import dev.stormwatch.vegvisir.capabilities.PlayerEnvironment;
 import dev.stormwatch.vegvisir.capabilities.PlayerEnvironmentProvider;
 import dev.stormwatch.vegvisir.environment.Shelter;
-import dev.stormwatch.vegvisir.environment.StatModifiers;
 import dev.stormwatch.vegvisir.environment.Temperature;
 import dev.stormwatch.vegvisir.registry.VegvisirEffects;
 import net.minecraft.core.BlockPos;
@@ -11,6 +11,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 
@@ -26,6 +27,19 @@ public class EnvironmentEvents {
     private static final Map<UUID, Integer> playerTickCounts = new HashMap<>();
 
     private static final int WET_DURATION = 2400;
+
+    @SubscribeEvent
+    public static void onPlayerDeathEvent(PlayerEvent.Clone event) {
+        if (event.getEntity().level.isClientSide()) return;
+        if (!event.isWasDeath()) return;
+        Player newPlayer = event.getEntity();
+        Player originalPlayer = event.getOriginal();
+
+        PlayerEnvironment playerEnvironment = newPlayer.getCapability(PlayerEnvironmentProvider.PLAYER_ENVIRONMENT).orElse(PlayerEnvironment.EMPTY);
+        PlayerEnvironment oldPlayerEnvironment = originalPlayer.getCapability(PlayerEnvironmentProvider.PLAYER_ENVIRONMENT).orElse(PlayerEnvironment.EMPTY);
+        if (playerEnvironment == PlayerEnvironment.EMPTY || oldPlayerEnvironment == PlayerEnvironment.EMPTY) return;
+        playerEnvironment.copyFrom(oldPlayerEnvironment);
+    }
 
     @SubscribeEvent
     public static void onPlayerTickEvent(TickEvent.PlayerTickEvent event) {

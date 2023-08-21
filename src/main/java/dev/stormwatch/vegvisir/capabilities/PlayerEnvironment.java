@@ -4,6 +4,8 @@ import net.minecraft.nbt.CompoundTag;
 
 public class PlayerEnvironment {
 
+    public static PlayerEnvironment EMPTY = new PlayerEnvironment();
+
     private boolean sheltered = false;
     private boolean wet = false;
     private boolean nearFire = false;
@@ -47,6 +49,13 @@ public class PlayerEnvironment {
 
     public void loadNBT(CompoundTag nbt) {
         this.temperature = nbt.getDouble("temperature");
+    }
+
+    public void copyFrom(PlayerEnvironment playerEnvironment) {
+        this.sheltered = playerEnvironment.isSheltered();
+        this.wet = playerEnvironment.isWet();
+        this.nearFire = playerEnvironment.isNearFire();
+        this.temperature = playerEnvironment.getTemperature();
     }
 
 }

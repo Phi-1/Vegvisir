@@ -1,9 +1,15 @@
 package dev.stormwatch.vegvisir;
 
 import com.mojang.logging.LogUtils;
+import dev.stormwatch.vegvisir.client.SpinningWheelStates;
 import dev.stormwatch.vegvisir.datagen.VegvisirRecipeProvider;
 import dev.stormwatch.vegvisir.effects.WetEffect;
 import dev.stormwatch.vegvisir.environment.Nutrition;
+import dev.stormwatch.vegvisir.events.CampfireEvents;
+import dev.stormwatch.vegvisir.events.CapabilityEvents;
+import dev.stormwatch.vegvisir.events.EnvironmentEvents;
+import dev.stormwatch.vegvisir.events.NutritionEvents;
+import dev.stormwatch.vegvisir.networking.VegvisirNetworking;
 import dev.stormwatch.vegvisir.registry.VegvisirBlockEntityTypes;
 import dev.stormwatch.vegvisir.registry.VegvisirBlocks;
 import dev.stormwatch.vegvisir.registry.VegvisirEffects;
@@ -13,13 +19,13 @@ import dev.stormwatch.vegvisir.renderers.SpinningWheelRenderer;
 import net.minecraft.data.PackOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.event.CreativeModeTabEvent;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -32,11 +38,8 @@ import org.slf4j.Logger;
 import software.bernie.geckolib.GeckoLib;
 import top.theillusivec4.curios.api.SlotTypeMessage;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.EnumSet;
 
-// The value here should match an entry in the META-INF/mods.toml file
 @Mod(Vegvisir.MOD_ID)
 public class Vegvisir {
     public static final String MOD_ID = "vegvisir";
@@ -74,6 +77,9 @@ public class Vegvisir {
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
+        event.enqueueWork(() -> {
+            VegvisirNetworking.register();
+        });
     }
 
     private void addCreative(CreativeModeTabEvent.BuildContents event) {
@@ -106,15 +112,18 @@ public class Vegvisir {
 
     @Mod.EventBusSubscriber(modid = MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
     public static class ClientSetupEvents {
+
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event) {
 
         }
+
         @SubscribeEvent
         public static void registerRenderers(final EntityRenderersEvent.RegisterRenderers event) {
             event.registerBlockEntityRenderer(VegvisirBlockEntityTypes.SPINNING_WHEEL_BLOCK_ENTITY.get(), SpinningWheelRenderer::new);
             event.registerBlockEntityRenderer(VegvisirBlockEntityTypes.ORB_BLOCK_ENTITY.get(), OrbRenderer::new);
         }
+
     }
 
     @Mod.EventBusSubscriber(modid = MOD_ID, value = Dist.CLIENT)
@@ -138,6 +147,14 @@ public class Vegvisir {
             }
             if (nutritionGroups.contains(Nutrition.NutritionGroup.STARCH)) {
                 event.getToolTip().add(Component.translatable("vegvisir.tooltip.nutrition.starch"));
+            }
+        }
+
+        @SubscribeEvent
+        public static void onPlayerTickEvent(TickEvent.PlayerTickEvent event) {
+            if (event.phase == TickEvent.Phase.START) return;
+            if (SpinningWheelStates.wasUpdated()) {
+                SpinningWheelStates.updateAllSpinningWheels(event.player.level);
             }
         }
     }

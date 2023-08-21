@@ -7,6 +7,8 @@ import java.util.EnumSet;
 
 public class Nutrition {
 
+    public static int FOOD_NUTRITION_MODIFIER = 10;
+
     public enum NutritionGroup {
         MEAT,
         FISH,

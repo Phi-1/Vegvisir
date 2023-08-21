@@ -1,8 +1,10 @@
-package dev.stormwatch.vegvisir;
+package dev.stormwatch.vegvisir.events;
 
+import dev.stormwatch.vegvisir.Vegvisir;
 import dev.stormwatch.vegvisir.capabilities.CampfireFuelLevelProvider;
 import dev.stormwatch.vegvisir.capabilities.LevelCampfireTrackerProvider;
 import dev.stormwatch.vegvisir.capabilities.PlayerEnvironmentProvider;
+import dev.stormwatch.vegvisir.capabilities.PlayerNutritionProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -18,7 +20,10 @@ public class CapabilityEvents {
     public static void entityCapabilityEvent(AttachCapabilitiesEvent<Entity> event) {
         if (event.getObject() instanceof Player) {
             if (!event.getObject().getCapability(PlayerEnvironmentProvider.PLAYER_ENVIRONMENT).isPresent()) {
-                event.addCapability(new ResourceLocation(Vegvisir.MOD_ID, "properties"), new PlayerEnvironmentProvider());
+                event.addCapability(new ResourceLocation(Vegvisir.MOD_ID, "player_environment"), new PlayerEnvironmentProvider());
+            }
+            if (!event.getObject().getCapability(PlayerNutritionProvider.PLAYER_NUTRITION).isPresent()) {
+                event.addCapability(new ResourceLocation(Vegvisir.MOD_ID, "player_nutrition"), new PlayerNutritionProvider());
             }
         }
     }
@@ -27,7 +32,7 @@ public class CapabilityEvents {
     public static void blockEntityCapabilityEvent(AttachCapabilitiesEvent<BlockEntity> event) {
         if (event.getObject() instanceof CampfireBlockEntity) {
             if (!event.getObject().getCapability(CampfireFuelLevelProvider.CAMPFIRE_FUEL_LEVEL).isPresent()) {
-                event.addCapability(new ResourceLocation(Vegvisir.MOD_ID, "properties"), new CampfireFuelLevelProvider());
+                event.addCapability(new ResourceLocation(Vegvisir.MOD_ID, "campfire_fuel"), new CampfireFuelLevelProvider());
             }
         }
     }
@@ -35,7 +40,7 @@ public class CapabilityEvents {
     @SubscribeEvent
     public static void levelCapabilityEvent(AttachCapabilitiesEvent<Level> event) {
         if (!event.getObject().getCapability(LevelCampfireTrackerProvider.LEVEL_CAMPFIRE_TRACKER).isPresent()) {
-            event.addCapability(new ResourceLocation(Vegvisir.MOD_ID, "properties"), new LevelCampfireTrackerProvider());
+            event.addCapability(new ResourceLocation(Vegvisir.MOD_ID, "campfire_tracker"), new LevelCampfireTrackerProvider());
         }
     }
 
