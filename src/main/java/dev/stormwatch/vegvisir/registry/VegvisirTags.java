@@ -19,6 +19,10 @@ public class VegvisirTags {
         public static final TagKey<Item> RAW_FISH = ItemTags.create(new ResourceLocation(Vegvisir.MOD_ID, "nutrition/raw_fish"));
 
         public static final TagKey<Item> RETURNS_BOWL = ItemTags.create(new ResourceLocation(Vegvisir.MOD_ID, "crafting/returns_bowl"));
+
+        public static final TagKey<Item> SWEATER = ItemTags.create(new ResourceLocation("curios", "sweater"));
+        public static final TagKey<Item> BEANIE = ItemTags.create(new ResourceLocation("curios", "beanie"));
+        public static final TagKey<Item> SOCKS = ItemTags.create(new ResourceLocation("curios", "socks"));
     }
 
 }

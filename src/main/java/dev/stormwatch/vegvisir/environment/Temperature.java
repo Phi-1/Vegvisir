@@ -22,10 +22,9 @@ public class Temperature {
     public static final double DAY_TEMPERATURE_MODIFIER = 3;
     public static final double NIGHT_TEMPERATURE_MODIFIER = -3;
 
-    // TODO
-    public static final double BEANIE_MODIFIER = 0;
-    public static final double SWEATER_MODIFIER = 0;
-    public static final double SOCKS_MODIFIER = 0;
+    public static final double BEANIE_MODIFIER = 3;
+    public static final double SWEATER_MODIFIER = 5;
+    public static final double SOCKS_MODIFIER = 2;
 
     public static class Stats {
 
@@ -77,7 +76,6 @@ public class Temperature {
         }
 
         private static void setAttribute(Player player, Attribute attribute, String name, UUID uuid, double amount) {
-            // TODO: set player health if max health decreased and current health is > new max
             AttributeInstance instance = player.getAttribute(attribute);
             if (instance != null) {
                 AttributeModifier modifier = instance.getModifier(uuid);
@@ -85,6 +83,7 @@ public class Temperature {
                     instance.removeModifier(uuid);
                 }
                 instance.addPermanentModifier(new AttributeModifier(uuid, name, amount, AttributeModifier.Operation.MULTIPLY_BASE));
+                // TODO: set health to max health if max decreased, player.setHealth does hurt animation so needs other method
             }
         }
 

@@ -6,14 +6,18 @@ import dev.stormwatch.vegvisir.capabilities.PlayerEnvironmentProvider;
 import dev.stormwatch.vegvisir.environment.Shelter;
 import dev.stormwatch.vegvisir.environment.Temperature;
 import dev.stormwatch.vegvisir.registry.VegvisirEffects;
+import dev.stormwatch.vegvisir.registry.VegvisirTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
+import net.minecraftforge.items.IItemHandlerModifiable;
+import top.theillusivec4.curios.api.CuriosApi;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -119,7 +123,16 @@ public class EnvironmentEvents {
             fireTemp = Temperature.Fire.calcFireTemperature(nearbyFire.distManhattan(player.blockPosition()), sheltered);
         }
 
-        double temp = biomeTemp + fireTemp + altitudeTemp + weatherTemp + timeTemp + seasonTemp;
+        double clothingTemp = 0;
+        IItemHandlerModifiable curios = CuriosApi.getCuriosHelper().getEquippedCurios(player).orElseThrow(() -> new IllegalStateException("Player does not have a curios inventory"));
+        for (int slot = 0; slot < curios.getSlots(); slot++) {
+            ItemStack stack = curios.getStackInSlot(slot);
+            if (stack.is(VegvisirTags.Items.SWEATER)) clothingTemp += Temperature.SWEATER_MODIFIER;
+            else if (stack.is(VegvisirTags.Items.BEANIE)) clothingTemp += Temperature.BEANIE_MODIFIER;
+            else if (stack.is(VegvisirTags.Items.SOCKS)) clothingTemp += Temperature.SOCKS_MODIFIER;
+        }
+
+        double temp = biomeTemp + fireTemp + altitudeTemp + weatherTemp + timeTemp + seasonTemp + clothingTemp;
 
         player.displayClientMessage(Component.literal(temp + " C"), true);
         return temp;
