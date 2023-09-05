@@ -33,6 +33,10 @@ public class VegvisirItems {
     // Food
     public static final RegistryObject<Item> DOUGH = ITEMS.register("dough",
             () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> PUMKIN_PIE_BATTER = ITEMS.register("pumpkin_pie_batter",
+            () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> UNCOOKED_PUMKIN_PIE = ITEMS.register("uncooked_pumpkin_pie",
+            () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> EYESCREAM = ITEMS.register("eyescream",
             () -> new Item(new Item.Properties().food(new FoodProperties.Builder().build())));
 

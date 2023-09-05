@@ -19,6 +19,8 @@ import java.util.function.Consumer;
 // Only extends RecipeProvider for access to TriggerInstances
 public class VegvisirRecipes extends RecipeProvider {
 
+    // TODO: spinning wheel recipe
+
     public static final ShapelessRecipeBuilder FISH_OIL = ShapelessRecipeBuilder.shapeless(RecipeCategory.BREWING, VegvisirItems.FISH_OIL.get(), 1)
             .requires(VegvisirTags.Items.RAW_FISH)
             .requires(Items.GLASS_BOTTLE)
@@ -32,6 +34,18 @@ public class VegvisirRecipes extends RecipeProvider {
             .requires(Items.BOWL)
             .unlockedBy("filled_water_bucket", FilledBucketTrigger.TriggerInstance.filledBucket(ItemPredicate.Builder.item().of(Items.WATER_BUCKET).build()));
 
+    public static final ShapelessRecipeBuilder PUMPKIN_PIE_BATTER = ShapelessRecipeBuilder.shapeless(RecipeCategory.FOOD, VegvisirItems.PUMKIN_PIE_BATTER.get(), 2)
+            .requires(Items.PUMPKIN, 3)
+            .requires(Items.SUGAR, 3)
+            .requires(Items.EGG, 2)
+            .requires(Items.BOWL)
+            .unlockedBy("obtained_pumpkin", inventoryTrigger(ItemPredicate.Builder.item().of(Items.PUMPKIN).build()));
+
+    public static final ShapelessRecipeBuilder UNCOOKED_PUMPKIN_PIE = ShapelessRecipeBuilder.shapeless(RecipeCategory.FOOD, VegvisirItems.UNCOOKED_PUMKIN_PIE.get(), 1)
+            .requires(VegvisirItems.PUMKIN_PIE_BATTER.get())
+            .requires(VegvisirItems.DOUGH.get())
+            .unlockedBy("obtained_pumpkin_batter", inventoryTrigger(ItemPredicate.Builder.item().of(VegvisirItems.PUMKIN_PIE_BATTER.get()).build()));
+
     // TODO: figure out proper xp, 10 = 21 levels from a stack
     // TODO: cooking time
     // TODO: if vanilla override recipe is annoying in recipe book, see https://forums.minecraftforge.net/topic/89592-1161-overriding-vanilla-recipes/?do=findComment&comment=417682
@@ -39,8 +53,10 @@ public class VegvisirRecipes extends RecipeProvider {
             Items.BREAD, 10, 400)
             .unlockedBy("has_wheat", inventoryTrigger(ItemPredicate.Builder.item().of(Items.WHEAT).build()));
 
+    public static final SimpleCookingRecipeBuilder PUMPKIN_PIE = SimpleCookingRecipeBuilder.smelting(Ingredient.of(VegvisirItems.UNCOOKED_PUMKIN_PIE.get()), RecipeCategory.FOOD,
+                    Items.PUMPKIN_PIE, 20, 300)
+            .unlockedBy("has_uncooked_pumpkin_pie", inventoryTrigger(ItemPredicate.Builder.item().of(VegvisirItems.UNCOOKED_PUMKIN_PIE.get()).build()));
 
-    // TODO: pumpkin pie baking recipe
 
 
 

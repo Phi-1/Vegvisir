@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "vegvisir:uncooked_pumpkin_pie"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "obtained_pumpkin_batter": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "vegvisir:pumpkin_pie_batter"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "obtained_pumpkin_batter",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "vegvisir:uncooked_pumpkin_pie"
+    ]
+  }
+}

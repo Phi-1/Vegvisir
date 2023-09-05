@@ -15,7 +15,10 @@ public class VegvisirRecipeProvider extends RecipeProvider {
     @Override
     protected void buildRecipes(Consumer<FinishedRecipe> writer) {
         VegvisirRecipes.DOUGH.save(writer);
+        VegvisirRecipes.PUMPKIN_PIE_BATTER.save(writer);
+        VegvisirRecipes.UNCOOKED_PUMPKIN_PIE.save(writer);
         VegvisirRecipes.BREAD.save(writer);
+        VegvisirRecipes.PUMPKIN_PIE.save(writer);
         VegvisirRecipes.FISH_OIL.save(writer);
     }
 }

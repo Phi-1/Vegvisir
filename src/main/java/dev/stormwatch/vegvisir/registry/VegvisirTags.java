@@ -17,6 +17,8 @@ public class VegvisirTags {
         public static final TagKey<Item> STARCH = ItemTags.create(new ResourceLocation(Vegvisir.MOD_ID, "nutrition/starch"));
 
         public static final TagKey<Item> RAW_FISH = ItemTags.create(new ResourceLocation(Vegvisir.MOD_ID, "nutrition/raw_fish"));
+
+        public static final TagKey<Item> RETURNS_BOWL = ItemTags.create(new ResourceLocation(Vegvisir.MOD_ID, "crafting/returns_bowl"));
     }
 
 }
