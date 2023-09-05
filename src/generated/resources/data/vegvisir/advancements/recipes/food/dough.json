@@ -1,13 +1,7 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_the_recipe": {
-      "conditions": {
-        "recipe": "vegvisir:dough"
-      },
-      "trigger": "minecraft:recipe_unlocked"
-    },
-    "picked_up_wheat": {
+    "filled_water_bucket": {
       "conditions": {
         "item": {
           "items": [
@@ -16,11 +10,17 @@
         }
       },
       "trigger": "minecraft:filled_bucket"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "vegvisir:dough"
+      },
+      "trigger": "minecraft:recipe_unlocked"
     }
   },
   "requirements": [
     [
-      "picked_up_wheat",
+      "filled_water_bucket",
       "has_the_recipe"
     ]
   ],

@@ -16,5 +16,6 @@ public class VegvisirRecipeProvider extends RecipeProvider {
     protected void buildRecipes(Consumer<FinishedRecipe> writer) {
         VegvisirRecipes.DOUGH.save(writer);
         VegvisirRecipes.BREAD.save(writer);
+        VegvisirRecipes.FISH_OIL.save(writer);
     }
 }

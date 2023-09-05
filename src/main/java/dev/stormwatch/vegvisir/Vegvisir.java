@@ -5,15 +5,9 @@ import dev.stormwatch.vegvisir.client.SpinningWheelStates;
 import dev.stormwatch.vegvisir.datagen.VegvisirRecipeProvider;
 import dev.stormwatch.vegvisir.effects.WetEffect;
 import dev.stormwatch.vegvisir.environment.Nutrition;
-import dev.stormwatch.vegvisir.events.CampfireEvents;
-import dev.stormwatch.vegvisir.events.CapabilityEvents;
-import dev.stormwatch.vegvisir.events.EnvironmentEvents;
-import dev.stormwatch.vegvisir.events.NutritionEvents;
+import dev.stormwatch.vegvisir.events.*;
 import dev.stormwatch.vegvisir.networking.VegvisirNetworking;
-import dev.stormwatch.vegvisir.registry.VegvisirBlockEntityTypes;
-import dev.stormwatch.vegvisir.registry.VegvisirBlocks;
-import dev.stormwatch.vegvisir.registry.VegvisirEffects;
-import dev.stormwatch.vegvisir.registry.VegvisirItems;
+import dev.stormwatch.vegvisir.registry.*;
 import dev.stormwatch.vegvisir.renderers.OrbRenderer;
 import dev.stormwatch.vegvisir.renderers.SpinningWheelRenderer;
 import net.minecraft.data.PackOutput;
@@ -57,6 +51,7 @@ public class Vegvisir {
 
         VegvisirItems.register(modEventBus);
         VegvisirEffects.register(modEventBus);
+        VegvisirPotions.register(modEventBus);
         VegvisirBlocks.register(modEventBus);
         VegvisirBlockEntityTypes.register(modEventBus);
 
@@ -66,6 +61,7 @@ public class Vegvisir {
         MinecraftForge.EVENT_BUS.register(EnvironmentEvents.class);
         MinecraftForge.EVENT_BUS.register(NutritionEvents.class);
         MinecraftForge.EVENT_BUS.register(CampfireEvents.class);
+        MinecraftForge.EVENT_BUS.register(MiscEvents.class);
     }
 
     private void gatherData(GatherDataEvent event) {
@@ -93,9 +89,18 @@ public class Vegvisir {
         if (event.getTab() == CreativeModeTabs.FUNCTIONAL_BLOCKS) {
             event.accept(VegvisirBlocks.SPINNING_WHEEL_BLOCK);
         }
+        if (event.getTab() == CreativeModeTabs.INGREDIENTS) {
+            event.accept(VegvisirItems.WOOL_YARN);
+        }
     }
 
     private void registerCuriosSlots() {
+        InterModComms.sendTo("curios", SlotTypeMessage.REGISTER_TYPE,
+                () -> new SlotTypeMessage.Builder("beanie")
+                        .icon(new ResourceLocation(Vegvisir.MOD_ID, "slot/beanie"))
+                        .priority(10)
+                        .size(1)
+                        .build());
         InterModComms.sendTo("curios", SlotTypeMessage.REGISTER_TYPE,
                 () -> new SlotTypeMessage.Builder("sweater")
                         .icon(new ResourceLocation(Vegvisir.MOD_ID, "slot/sweater"))

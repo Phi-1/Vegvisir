@@ -1,11 +1,15 @@
 package dev.stormwatch.vegvisir.datagen;
 
 import dev.stormwatch.vegvisir.registry.VegvisirItems;
+import dev.stormwatch.vegvisir.registry.VegvisirTags;
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.advancements.critereon.FilledBucketTrigger;
+import net.minecraft.advancements.critereon.FishingRodHookedTrigger;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.advancements.critereon.PlacedBlockTrigger;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Blocks;
@@ -15,13 +19,18 @@ import java.util.function.Consumer;
 // Only extends RecipeProvider for access to TriggerInstances
 public class VegvisirRecipes extends RecipeProvider {
 
-    public static final ShapedRecipeBuilder DOUGH = ShapedRecipeBuilder.shaped(RecipeCategory.FOOD, VegvisirItems.DOUGH.get(), 2)
-            .pattern("WWW")
-            .pattern("WBW")
-            .pattern("WWW")
-            .define('W', Items.WHEAT)
-            .define('B', Items.WATER_BUCKET)
-            .unlockedBy("picked_up_wheat", FilledBucketTrigger.TriggerInstance.filledBucket(ItemPredicate.Builder.item().of(Items.WATER_BUCKET).build()));
+    public static final ShapelessRecipeBuilder FISH_OIL = ShapelessRecipeBuilder.shapeless(RecipeCategory.BREWING, VegvisirItems.FISH_OIL.get(), 1)
+            .requires(VegvisirTags.Items.RAW_FISH)
+            .requires(Items.GLASS_BOTTLE)
+            .requires(Items.BOWL)
+            .requires(Items.STICK)
+            .unlockedBy("caught_fish", inventoryTrigger(ItemPredicate.Builder.item().of(VegvisirTags.Items.RAW_FISH).build()));
+
+    public static final ShapelessRecipeBuilder DOUGH = ShapelessRecipeBuilder.shapeless(RecipeCategory.FOOD, VegvisirItems.DOUGH.get(), 2)
+            .requires(Items.WHEAT, 7)
+            .requires(Items.WATER_BUCKET)
+            .requires(Items.BOWL)
+            .unlockedBy("filled_water_bucket", FilledBucketTrigger.TriggerInstance.filledBucket(ItemPredicate.Builder.item().of(Items.WATER_BUCKET).build()));
 
     // TODO: figure out proper xp, 10 = 21 levels from a stack
     // TODO: cooking time
@@ -36,7 +45,7 @@ public class VegvisirRecipes extends RecipeProvider {
 
 
 
-
+    // IGNORE
     private VegvisirRecipes(PackOutput pOutput) {
         super(pOutput);
     }

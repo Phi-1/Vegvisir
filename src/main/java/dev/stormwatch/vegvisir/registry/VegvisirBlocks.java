@@ -21,8 +21,10 @@ public class VegvisirBlocks {
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, Vegvisir.MOD_ID);
 
     public static final RegistryObject<Block> SPINNING_WHEEL_BLOCK = registerBlock("spinning_wheel",
-            () -> new SpinningWheelBlock(BlockBehaviour.Properties.of(Material.WOOD)
-                    .strength(2f, 3f)
+            () -> new SpinningWheelBlock(BlockBehaviour.Properties.of(Material.BAMBOO)
+                    .strength(1f, 5f)
+                    .noParticlesOnBreak()
+                    // TODO: this doesnt drop itself, currently drops itself in dropOnRemove
                     .noOcclusion()));
 
     public static final RegistryObject<Block> ORB_BLOCK = registerBlock("orb_block",

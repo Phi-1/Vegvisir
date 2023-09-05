@@ -1,22 +1,37 @@
 {
-  "type": "minecraft:crafting_shaped",
+  "type": "minecraft:crafting_shapeless",
   "category": "misc",
-  "key": {
-    "B": {
+  "ingredients": [
+    {
+      "item": "minecraft:wheat"
+    },
+    {
+      "item": "minecraft:wheat"
+    },
+    {
+      "item": "minecraft:wheat"
+    },
+    {
+      "item": "minecraft:wheat"
+    },
+    {
+      "item": "minecraft:wheat"
+    },
+    {
+      "item": "minecraft:wheat"
+    },
+    {
+      "item": "minecraft:wheat"
+    },
+    {
       "item": "minecraft:water_bucket"
     },
-    "W": {
-      "item": "minecraft:wheat"
+    {
+      "item": "minecraft:bowl"
     }
-  },
-  "pattern": [
-    "WWW",
-    "WBW",
-    "WWW"
   ],
   "result": {
-    "count": 8,
+    "count": 2,
     "item": "vegvisir:dough"
-  },
-  "show_notification": true
+  }
 }

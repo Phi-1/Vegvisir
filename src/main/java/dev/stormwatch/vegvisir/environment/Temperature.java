@@ -4,17 +4,91 @@ import com.google.common.collect.ImmutableMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import sereneseasons.api.season.Season;
 import sereneseasons.api.season.SeasonHelper;
 
+import java.util.UUID;
+
 public class Temperature {
     // Temperatures are in degrees celsius (roughly)
 
     public static final double DAY_TEMPERATURE_MODIFIER = 3;
     public static final double NIGHT_TEMPERATURE_MODIFIER = -3;
+
+    // TODO
+    public static final double BEANIE_MODIFIER = 0;
+    public static final double SWEATER_MODIFIER = 0;
+    public static final double SOCKS_MODIFIER = 0;
+
+    public static class Stats {
+
+        private static final double MINIMAL_TEMPERATURE = -4;
+        private static final double NEUTRAL_TEMPERATURE = 21;
+        private static final double OPTIMAL_TEMPERATURE = 24;
+
+        private static final double LOWER_DX = NEUTRAL_TEMPERATURE - MINIMAL_TEMPERATURE;
+        private static final double UPPER_DX = OPTIMAL_TEMPERATURE - NEUTRAL_TEMPERATURE;
+
+        private static final double NEUTRAL_STAT = 0;
+
+        private static final String HEALTH_NAME = "vegvisir_temperature_health";
+        private static final UUID   HEALTH_UUID = UUID.fromString("907f79c9-762e-481e-b8ec-3e22832f4f66");
+        private static final double MIN_HEALTH = -0.7;
+        private static final double MAX_HEALTH = 0.2;
+        private static final double LOWER_HEALTH_B = NEUTRAL_STAT - NEUTRAL_TEMPERATURE * ((NEUTRAL_STAT - MIN_HEALTH) / LOWER_DX);
+        private static final double UPPER_HEALTH_B = NEUTRAL_STAT - NEUTRAL_TEMPERATURE * ((MAX_HEALTH - NEUTRAL_STAT) / UPPER_DX);
+
+        private static final String SPEED_NAME = "vegvisir_temperature_movespeed";
+        private static final UUID   SPEED_UUID = UUID.fromString("e3358d22-95cd-4ca5-b6d7-60d520a9e200");
+        private static final double MIN_SPEED = -0.4;
+        private static final double MAX_SPEED = 0.2;
+        private static final double LOWER_SPEED_B = NEUTRAL_STAT - NEUTRAL_TEMPERATURE * ((NEUTRAL_STAT - MIN_SPEED) / LOWER_DX);
+        private static final double UPPER_SPEED_B = NEUTRAL_STAT - NEUTRAL_TEMPERATURE * ((MAX_SPEED - NEUTRAL_STAT) / UPPER_DX);
+
+        private static final String DAMAGE_NAME = "vegvisir_temperature_damage";
+        private static final UUID   DAMAGE_UUID = UUID.fromString("b023a486-3696-4f8d-9d48-d4af88200729");
+        private static final double MIN_DAMAGE = -0.6;
+        private static final double MAX_DAMAGE = 0.2;
+        private static final double LOWER_DAMAGE_B = NEUTRAL_STAT - NEUTRAL_TEMPERATURE * ((NEUTRAL_STAT - MIN_DAMAGE) / LOWER_DX);
+        private static final double UPPER_DAMAGE_B = NEUTRAL_STAT - NEUTRAL_TEMPERATURE * ((MAX_DAMAGE - NEUTRAL_STAT) / UPPER_DX);
+
+        public static void applyTemperatureStats(Player player, double temperature) {
+            double health = calcAttributeValue(temperature, MIN_HEALTH, MAX_HEALTH, LOWER_HEALTH_B, UPPER_HEALTH_B);
+            setAttribute(player, Attributes.MAX_HEALTH, HEALTH_NAME, HEALTH_UUID, health);
+            double speed = calcAttributeValue(temperature, MIN_SPEED, MAX_SPEED, LOWER_SPEED_B, UPPER_SPEED_B);
+            setAttribute(player, Attributes.MOVEMENT_SPEED, SPEED_NAME, SPEED_UUID, speed);
+            double damage = calcAttributeValue(temperature, MIN_DAMAGE, MAX_DAMAGE, LOWER_DAMAGE_B, UPPER_DAMAGE_B);
+            setAttribute(player, Attributes.ATTACK_DAMAGE, DAMAGE_NAME, DAMAGE_UUID, damage);
+        }
+
+        private static double calcAttributeValue(double temperature, double minValue, double maxValue, double lowerIntercept, double upperIntercept) {
+            if (temperature <= MINIMAL_TEMPERATURE) return minValue;
+            else if (temperature >= OPTIMAL_TEMPERATURE) return maxValue;
+            else return temperature < NEUTRAL_TEMPERATURE ?
+                        temperature * ((NEUTRAL_STAT - minValue) / LOWER_DX) + lowerIntercept
+                        : temperature * ((maxValue - NEUTRAL_STAT) / UPPER_DX) + upperIntercept;
+        }
+
+        private static void setAttribute(Player player, Attribute attribute, String name, UUID uuid, double amount) {
+            // TODO: set player health if max health decreased and current health is > new max
+            AttributeInstance instance = player.getAttribute(attribute);
+            if (instance != null) {
+                AttributeModifier modifier = instance.getModifier(uuid);
+                if (modifier != null) {
+                    instance.removeModifier(uuid);
+                }
+                instance.addPermanentModifier(new AttributeModifier(uuid, name, amount, AttributeModifier.Operation.MULTIPLY_BASE));
+            }
+        }
+
+    }
 
     public static class Biome {
         // TODO: nether and end
@@ -168,16 +242,7 @@ public class Temperature {
             return new NearbyFireInfo(nearestFire, false);
         }
 
-        public static class NearbyFireInfo {
-
-            public BlockPos nearbyFire;
-            public boolean nearLava;
-
-            private NearbyFireInfo(BlockPos nearbyFire, boolean nearLava) {
-                this.nearbyFire = nearbyFire;
-                this.nearLava = nearLava;
-            }
-        }
+        public record NearbyFireInfo(BlockPos nearbyFire, boolean nearLava) {}
     }
 
 }

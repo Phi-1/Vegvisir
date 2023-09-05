@@ -1,5 +1,7 @@
-// 1.19.4	2023-08-14T21:11:32.5039271	Recipes
-d8fc2bc72fe0398f58c4d1d4c86f61f9b7bb4444 data/minecraft/advancements/recipes/food/bread.json
+// 1.19.4	2023-09-05T12:15:28.1731801	Recipes
+b5bc6852b0c6f385e4547251f06cea2274a7384f data/minecraft/advancements/recipes/food/bread.json
 ae82f18997867dff198597ee2c95a6b55bd88884 data/minecraft/recipes/bread.json
-e15897ab071db588e955f6f17906d949eb5a7b28 data/vegvisir/advancements/recipes/food/dough.json
-36a0152c8cbfb023303e85eb8564683be2228d5a data/vegvisir/recipes/dough.json
+00f6f98300f2d3e2ba42e1ee6175e134a2c0d460 data/vegvisir/advancements/recipes/brewing/fish_oil.json
+762a786fb93ff8437093cc803ffd269103f61483 data/vegvisir/advancements/recipes/food/dough.json
+ed144e797463e678802ce1f7f5a2a0300e67ce84 data/vegvisir/recipes/dough.json
+d171c7b397038a40fe3e8cbb5b989068c838b5d4 data/vegvisir/recipes/fish_oil.json

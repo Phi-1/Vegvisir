@@ -1,34 +1,32 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_the_recipe": {
-      "conditions": {
-        "recipe": "minecraft:bread"
-      },
-      "trigger": "minecraft:recipe_unlocked"
-    },
-    "has_wheat": {
+    "caught_fish": {
       "conditions": {
         "items": [
           {
-            "items": [
-              "minecraft:wheat"
-            ]
+            "tag": "vegvisir:nutrition/raw_fish"
           }
         ]
       },
       "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "vegvisir:fish_oil"
+      },
+      "trigger": "minecraft:recipe_unlocked"
     }
   },
   "requirements": [
     [
-      "has_wheat",
+      "caught_fish",
       "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
-      "minecraft:bread"
+      "vegvisir:fish_oil"
     ]
   }
 }

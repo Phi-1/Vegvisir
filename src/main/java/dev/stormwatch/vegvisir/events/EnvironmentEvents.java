@@ -48,8 +48,8 @@ public class EnvironmentEvents {
 
         Player player = event.player;
         int playerTickCount = playerTickCounts.getOrDefault(player.getUUID(), 0);
-        PlayerEnvironment playerEnvironment = player.getCapability(PlayerEnvironmentProvider.PLAYER_ENVIRONMENT).orElse(null);
-        if (playerEnvironment == null) return;
+        PlayerEnvironment playerEnvironment = player.getCapability(PlayerEnvironmentProvider.PLAYER_ENVIRONMENT).orElse(PlayerEnvironment.EMPTY);
+        if (playerEnvironment == PlayerEnvironment.EMPTY) return;
 
         // Tick wet if next to fire
         if (playerEnvironment.isWet() && playerEnvironment.isNearFire()) {
@@ -73,11 +73,13 @@ public class EnvironmentEvents {
             processWetStatus(player, wasWet, isWet, playerEnvironment);
 
             Temperature.Fire.NearbyFireInfo fireInfo = Temperature.Fire.findNearestFire(player.blockPosition(), player.level, isSheltered);
-            if (fireInfo.nearbyFire != null) playerEnvironment.setNearFire(true);
+            if (fireInfo.nearbyFire() != null) playerEnvironment.setNearFire(true);
             else playerEnvironment.setNearFire(false);
 
-            double playerTemp = calcPlayerTemperature(player, fireInfo.nearbyFire, isSheltered);
+            double playerTemp = calcPlayerTemperature(player, fireInfo.nearbyFire(), isSheltered);
             playerEnvironment.setTemperature(playerTemp);
+
+            Temperature.Stats.applyTemperatureStats(player, playerTemp);
 
             // FIXME: this spams you are sheltered
             if (isSheltered && !wasSheltered) Feedback.onBecomeSheltered(player);
