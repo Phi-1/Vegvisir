@@ -35,4 +35,9 @@ public class Nutrition {
         return itemStack.is(VegvisirTags.Items.STARCH);
     }
 
+    public static class Stats {
+        // TODO
+        // buffs/debuffs attack damage, attack speed, max health, movespeed
+    }
+
 }

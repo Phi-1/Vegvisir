@@ -21,19 +21,6 @@ public class NutritionEvents {
     // TODO: tick nutrition
 
     @SubscribeEvent
-    public static void onPlayerDeathEvent(PlayerEvent.Clone event) {
-        if (event.getEntity().level.isClientSide()) return;
-        if (!event.isWasDeath()) return;
-        Player newPlayer = event.getEntity();
-        Player originalPlayer = event.getOriginal();
-
-        PlayerNutrition playerNutrition = newPlayer.getCapability(PlayerNutritionProvider.PLAYER_NUTRITION).orElse(PlayerNutrition.EMPTY);
-        PlayerNutrition oldPlayerNutrition = originalPlayer.getCapability(PlayerNutritionProvider.PLAYER_NUTRITION).orElse(PlayerNutrition.EMPTY);
-        if (playerNutrition == PlayerNutrition.EMPTY || oldPlayerNutrition == PlayerNutrition.EMPTY) return;
-        playerNutrition.copyFrom(oldPlayerNutrition);
-    }
-
-    @SubscribeEvent
     public static void onEatFoodEvent(LivingEntityUseItemEvent.Finish event) {
         if (event.getEntity().level.isClientSide()) return;
         if (!(event.getEntity() instanceof Player player)) return;
@@ -47,7 +34,6 @@ public class NutritionEvents {
         int lastPlayerFoodLevel = player.getFoodData().getLastFoodLevel();
         // halve nutrition increase
         int usedFoodLevel = Math.min(20 - lastPlayerFoodLevel, foodLevel);
-        // TODO: check that this calculation is correct im half asleep
         player.getFoodData().setFoodLevel(playerFoodLevel - Math.max(usedFoodLevel - foodLevel / 2, 0));
 
         // set effect to re add saturation once it's depleted

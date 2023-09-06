@@ -84,6 +84,7 @@ public class Temperature {
                 }
                 instance.addPermanentModifier(new AttributeModifier(uuid, name, amount, AttributeModifier.Operation.MULTIPLY_BASE));
                 // TODO: set health to max health if max decreased, player.setHealth does hurt animation so needs other method
+                // i tried livinghurtevent clientside, but it doesn't fire for this
             }
         }
 

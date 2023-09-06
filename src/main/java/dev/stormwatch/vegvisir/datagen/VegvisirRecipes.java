@@ -20,6 +20,7 @@ import java.util.function.Consumer;
 public class VegvisirRecipes extends RecipeProvider {
 
     // TODO: spinning wheel recipe
+    // TODO: clothing recipes
 
     public static final ShapelessRecipeBuilder FISH_OIL = ShapelessRecipeBuilder.shapeless(RecipeCategory.BREWING, VegvisirItems.FISH_OIL.get(), 1)
             .requires(VegvisirTags.Items.RAW_FISH)

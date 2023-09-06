@@ -13,6 +13,7 @@ import dev.stormwatch.vegvisir.renderers.SpinningWheelRenderer;
 import net.minecraft.data.PackOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
@@ -20,6 +21,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.event.CreativeModeTabEvent;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -36,6 +38,8 @@ import java.util.EnumSet;
 
 @Mod(Vegvisir.MOD_ID)
 public class Vegvisir {
+    // TODO: clothing sprites
+
     public static final String MOD_ID = "vegvisir";
     private static final Logger LOGGER = LogUtils.getLogger();
 
@@ -81,16 +85,16 @@ public class Vegvisir {
     private void addCreative(CreativeModeTabEvent.BuildContents event) {
         if (event.getTab() == CreativeModeTabs.FOOD_AND_DRINKS) {
             event.accept(VegvisirItems.EYESCREAM);
-        }
-        if (event.getTab() == CreativeModeTabs.COMBAT) {
-            event.accept(VegvisirItems.WOOL_SWEATER);
-            event.accept(VegvisirItems.KNIT_CAP);
+            event.accept(VegvisirItems.DOUGH);
+            event.accept(VegvisirItems.PUMKIN_PIE_BATTER);
+            event.accept(VegvisirItems.UNCOOKED_PUMKIN_PIE);
         }
         if (event.getTab() == CreativeModeTabs.FUNCTIONAL_BLOCKS) {
             event.accept(VegvisirBlocks.SPINNING_WHEEL_BLOCK);
         }
         if (event.getTab() == CreativeModeTabs.INGREDIENTS) {
             event.accept(VegvisirItems.WOOL_YARN);
+            event.accept(VegvisirItems.FISH_OIL);
         }
     }
 

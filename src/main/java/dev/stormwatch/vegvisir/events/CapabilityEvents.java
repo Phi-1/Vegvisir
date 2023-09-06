@@ -1,10 +1,7 @@
 package dev.stormwatch.vegvisir.events;
 
 import dev.stormwatch.vegvisir.Vegvisir;
-import dev.stormwatch.vegvisir.capabilities.CampfireFuelLevelProvider;
-import dev.stormwatch.vegvisir.capabilities.LevelCampfireTrackerProvider;
-import dev.stormwatch.vegvisir.capabilities.PlayerEnvironmentProvider;
-import dev.stormwatch.vegvisir.capabilities.PlayerNutritionProvider;
+import dev.stormwatch.vegvisir.capabilities.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -12,6 +9,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.CampfireBlockEntity;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class CapabilityEvents {
@@ -42,6 +40,24 @@ public class CapabilityEvents {
         if (!event.getObject().getCapability(LevelCampfireTrackerProvider.LEVEL_CAMPFIRE_TRACKER).isPresent()) {
             event.addCapability(new ResourceLocation(Vegvisir.MOD_ID, "campfire_tracker"), new LevelCampfireTrackerProvider());
         }
+    }
+
+    @SubscribeEvent
+    public static void clonePlayerCapabilitiesOnDeath(PlayerEvent.Clone event) {
+        if (event.getEntity().level.isClientSide()) return;
+        if (!event.isWasDeath()) return;
+        Player newPlayer = event.getEntity();
+        Player originalPlayer = event.getOriginal();
+
+        PlayerNutrition playerNutrition = newPlayer.getCapability(PlayerNutritionProvider.PLAYER_NUTRITION).orElse(PlayerNutrition.EMPTY);
+        PlayerNutrition oldPlayerNutrition = originalPlayer.getCapability(PlayerNutritionProvider.PLAYER_NUTRITION).orElse(PlayerNutrition.EMPTY);
+        if (playerNutrition == PlayerNutrition.EMPTY || oldPlayerNutrition == PlayerNutrition.EMPTY) return;
+        playerNutrition.copyFrom(oldPlayerNutrition);
+
+        PlayerEnvironment playerEnvironment = newPlayer.getCapability(PlayerEnvironmentProvider.PLAYER_ENVIRONMENT).orElse(PlayerEnvironment.EMPTY);
+        PlayerEnvironment oldPlayerEnvironment = originalPlayer.getCapability(PlayerEnvironmentProvider.PLAYER_ENVIRONMENT).orElse(PlayerEnvironment.EMPTY);
+        if (playerEnvironment == PlayerEnvironment.EMPTY || oldPlayerEnvironment == PlayerEnvironment.EMPTY) return;
+        playerEnvironment.copyFrom(oldPlayerEnvironment);
     }
 
 }

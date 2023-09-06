@@ -25,7 +25,6 @@ import java.util.UUID;
 
 public class EnvironmentEvents {
     // TODO: below certain temperature require nearby fire to sleep
-    // TODO: player cap reload on respawn
 
     private static final int playerTickRate = 1 * 20;
     private static final Map<UUID, Integer> playerTickCounts = new HashMap<>();
@@ -56,11 +55,8 @@ public class EnvironmentEvents {
         if (playerEnvironment == PlayerEnvironment.EMPTY) return;
 
         // Tick wet if next to fire
-        if (playerEnvironment.isWet() && playerEnvironment.isNearFire()) {
-            // FIXME: this doesn't work on logging in with wet status near a fire
-            System.out.println("wet near fire");
+        if (playerEnvironment.isWet() && playerEnvironment.isNearFire() && !player.isInWaterOrRain()) {
             MobEffectInstance wetEffect = player.getEffect(VegvisirEffects.WET.get());
-            // TODO: dont tick if player is in rain or water
             if (wetEffect != null) {
                 int duration = wetEffect.getDuration();
                 player.removeEffect(VegvisirEffects.WET.get());
@@ -74,21 +70,19 @@ public class EnvironmentEvents {
             boolean isSheltered = Shelter.isSheltered(player);
             boolean isWet = player.isInWaterOrRain();
 
+            // Wet
             processWetStatus(player, wasWet, isWet, playerEnvironment);
 
+            // Temperature
             Temperature.Fire.NearbyFireInfo fireInfo = Temperature.Fire.findNearestFire(player.blockPosition(), player.level, isSheltered);
-            if (fireInfo.nearbyFire() != null) playerEnvironment.setNearFire(true);
-            else playerEnvironment.setNearFire(false);
-
+            playerEnvironment.setNearFire(fireInfo.nearbyFire() != null);
             double playerTemp = calcPlayerTemperature(player, fireInfo.nearbyFire(), isSheltered);
             playerEnvironment.setTemperature(playerTemp);
-
             Temperature.Stats.applyTemperatureStats(player, playerTemp);
 
-            // FIXME: this spams you are sheltered
+            // Shelter
+            playerEnvironment.setSheltered(isSheltered);
             if (isSheltered && !wasSheltered) Feedback.onBecomeSheltered(player);
-            // FIXME: this spams you are wet in rain
-            if (isWet && !wasWet) Feedback.onBecomeWet(player);
 
             playerTickCounts.put(player.getUUID(), playerTickCount - playerTickRate);
         } else {
@@ -97,18 +91,17 @@ public class EnvironmentEvents {
     }
 
     private static void processWetStatus(Player player, boolean wasWet, boolean isWet, PlayerEnvironment playerEnvironment) {
-        MobEffectInstance wetEffect = player.getEffect(VegvisirEffects.WET.get());
-        if (wetEffect == null) {
-            if (wasWet && !isWet) {
-                playerEnvironment.setWet(false);
+        if (isWet) {
+            player.addEffect(new MobEffectInstance(VegvisirEffects.WET.get(), WET_DURATION));
+            playerEnvironment.setWet(true);
+            if (!wasWet) {
+                Feedback.onBecomeWet(player);
+            }
+        } else if (!player.hasEffect(VegvisirEffects.WET.get())) {
+            playerEnvironment.setWet(false);
+            if (wasWet) {
                 Feedback.onBecomeDry(player);
             }
-            if (isWet) {
-                player.addEffect(new MobEffectInstance(VegvisirEffects.WET.get(), WET_DURATION));
-                playerEnvironment.setWet(true);
-            }
-        } else {
-            if (isWet) player.addEffect(new MobEffectInstance(VegvisirEffects.WET.get(), WET_DURATION));
         }
     }
 
@@ -134,7 +127,7 @@ public class EnvironmentEvents {
 
         double temp = biomeTemp + fireTemp + altitudeTemp + weatherTemp + timeTemp + seasonTemp + clothingTemp;
 
-        player.displayClientMessage(Component.literal(temp + " C"), true);
+//        player.displayClientMessage(Component.literal(temp + " C"), true);
         return temp;
     }
 
