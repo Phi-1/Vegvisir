@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "tag": "minecraft:wooden_slabs"
+    },
+    "C": {
+      "item": "vegvisir:resonant_chrysalis"
+    },
+    "S": {
+      "item": "minecraft:stick"
+    }
+  },
+  "pattern": [
+    " S ",
+    "SCS",
+    "BBB"
+  ],
+  "result": {
+    "item": "vegvisir:spinning_wheel"
+  },
+  "show_notification": true
+}

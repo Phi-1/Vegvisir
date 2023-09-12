@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "vegvisir:wool_socks"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_yarn": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "vegvisir:wool_yarn"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_yarn",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "vegvisir:wool_socks"
+    ]
+  }
+}

@@ -20,5 +20,11 @@ public class VegvisirRecipeProvider extends RecipeProvider {
         VegvisirRecipes.BREAD.save(writer);
         VegvisirRecipes.PUMPKIN_PIE.save(writer);
         VegvisirRecipes.FISH_OIL.save(writer);
+        VegvisirRecipes.RESONANT_CHRYSALIS.save(writer);
+        VegvisirRecipes.SPINNING_WHEEL.save(writer);
+        VegvisirRecipes.WOOL_SOCKS.save(writer);
+        VegvisirRecipes.WOOL_SWEATER.save(writer);
+        VegvisirRecipes.KNIT_CAP.save(writer);
+
     }
 }

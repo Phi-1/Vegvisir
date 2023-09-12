@@ -1,5 +1,6 @@
 package dev.stormwatch.vegvisir.datagen;
 
+import dev.stormwatch.vegvisir.registry.VegvisirBlocks;
 import dev.stormwatch.vegvisir.registry.VegvisirItems;
 import dev.stormwatch.vegvisir.registry.VegvisirTags;
 import net.minecraft.advancements.CriteriaTriggers;
@@ -19,8 +20,44 @@ import java.util.function.Consumer;
 // Only extends RecipeProvider for access to TriggerInstances
 public class VegvisirRecipes extends RecipeProvider {
 
-    // TODO: spinning wheel recipe
-    // TODO: clothing recipes
+    public static final ShapedRecipeBuilder RESONANT_CHRYSALIS = ShapedRecipeBuilder.shaped(RecipeCategory.MISC, VegvisirItems.RESONANT_CHRYSALIS.get())
+            .pattern("GEG")
+            .pattern("ETE")
+            .pattern("GEG")
+            .define('G', Items.GOLD_INGOT)
+            .define('E', Items.EMERALD)
+            .define('T', Items.GHAST_TEAR)
+            .unlockedBy("has_wool", inventoryTrigger(ItemPredicate.Builder.item().of(ItemTags.WOOL).build()));
+
+    public static final ShapedRecipeBuilder SPINNING_WHEEL = ShapedRecipeBuilder.shaped(RecipeCategory.MISC, VegvisirBlocks.SPINNING_WHEEL_BLOCK.get())
+            .pattern(" S ")
+            .pattern("SCS")
+            .pattern("BBB")
+            .define('S', Items.STICK)
+            .define('C', VegvisirItems.RESONANT_CHRYSALIS.get())
+            .define('B', ItemTags.WOODEN_SLABS)
+            .unlockedBy("has_wool", inventoryTrigger(ItemPredicate.Builder.item().of(ItemTags.WOOL).build()));
+
+    public static final ShapedRecipeBuilder WOOL_SWEATER = ShapedRecipeBuilder.shaped(RecipeCategory.MISC, VegvisirItems.WOOL_SWEATER.get())
+            .pattern("Y Y")
+            .pattern("YYY")
+            .pattern("YYY")
+            .define('Y', VegvisirItems.WOOL_YARN.get())
+            .unlockedBy("has_yarn", inventoryTrigger(ItemPredicate.Builder.item().of(VegvisirItems.WOOL_YARN.get()).build()));
+
+    public static final ShapedRecipeBuilder WOOL_SOCKS = ShapedRecipeBuilder.shaped(RecipeCategory.MISC, VegvisirItems.WOOL_SOCKS.get())
+            .pattern("   ")
+            .pattern("Y Y")
+            .pattern("Y Y")
+            .define('Y', VegvisirItems.WOOL_YARN.get())
+            .unlockedBy("has_yarn", inventoryTrigger(ItemPredicate.Builder.item().of(VegvisirItems.WOOL_YARN.get()).build()));
+
+    public static final ShapedRecipeBuilder KNIT_CAP = ShapedRecipeBuilder.shaped(RecipeCategory.MISC, VegvisirItems.KNIT_CAP.get())
+            .pattern("YYY")
+            .pattern("Y Y")
+            .pattern("   ")
+            .define('Y', VegvisirItems.WOOL_YARN.get())
+            .unlockedBy("has_yarn", inventoryTrigger(ItemPredicate.Builder.item().of(VegvisirItems.WOOL_YARN.get()).build()));
 
     public static final ShapelessRecipeBuilder FISH_OIL = ShapelessRecipeBuilder.shapeless(RecipeCategory.BREWING, VegvisirItems.FISH_OIL.get(), 1)
             .requires(VegvisirTags.Items.RAW_FISH)

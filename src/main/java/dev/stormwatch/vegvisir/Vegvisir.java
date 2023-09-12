@@ -38,7 +38,8 @@ import java.util.EnumSet;
 
 @Mod(Vegvisir.MOD_ID)
 public class Vegvisir {
-    // TODO: clothing sprites
+    // TODO: way to see nutrition and temperature ingame
+    // TODO: clothing durability
 
     public static final String MOD_ID = "vegvisir";
     private static final Logger LOGGER = LogUtils.getLogger();
@@ -94,7 +95,13 @@ public class Vegvisir {
         }
         if (event.getTab() == CreativeModeTabs.INGREDIENTS) {
             event.accept(VegvisirItems.WOOL_YARN);
+            event.accept(VegvisirItems.WOOL_PATCH);
             event.accept(VegvisirItems.FISH_OIL);
+        }
+        if (event.getTab() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
+            event.accept(VegvisirItems.KNIT_CAP);
+            event.accept(VegvisirItems.WOOL_SWEATER);
+            event.accept(VegvisirItems.WOOL_SOCKS);
         }
     }
 

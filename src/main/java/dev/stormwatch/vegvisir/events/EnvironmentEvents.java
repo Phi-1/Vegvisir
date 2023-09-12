@@ -12,6 +12,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -26,8 +27,7 @@ import java.util.UUID;
 public class EnvironmentEvents {
     // TODO: below certain temperature require nearby fire to sleep
 
-    private static final int playerTickRate = 1 * 20;
-    private static final Map<UUID, Integer> playerTickCounts = new HashMap<>();
+    private static final int PLAYER_TICKRATE = 1 * 20;
 
     private static final int WET_DURATION = 2400;
 
@@ -50,7 +50,6 @@ public class EnvironmentEvents {
         if (event.phase == TickEvent.Phase.START) return;
 
         Player player = event.player;
-        int playerTickCount = playerTickCounts.getOrDefault(player.getUUID(), 0);
         PlayerEnvironment playerEnvironment = player.getCapability(PlayerEnvironmentProvider.PLAYER_ENVIRONMENT).orElse(PlayerEnvironment.EMPTY);
         if (playerEnvironment == PlayerEnvironment.EMPTY) return;
 
@@ -64,7 +63,8 @@ public class EnvironmentEvents {
             }
         }
 
-        if (playerTickCount >= playerTickRate) {
+        if (player.level.getGameTime() % PLAYER_TICKRATE == 0) {
+            // TODO: this lags the game, not in new world though? keep an eye on it, might be a memory leak
             boolean wasSheltered = playerEnvironment.isSheltered();
             boolean wasWet = playerEnvironment.isWet();
             boolean isSheltered = Shelter.isSheltered(player);
@@ -83,10 +83,6 @@ public class EnvironmentEvents {
             // Shelter
             playerEnvironment.setSheltered(isSheltered);
             if (isSheltered && !wasSheltered) Feedback.onBecomeSheltered(player);
-
-            playerTickCounts.put(player.getUUID(), playerTickCount - playerTickRate);
-        } else {
-            playerTickCounts.put(player.getUUID(), ++playerTickCount);
         }
     }
 

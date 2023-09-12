@@ -39,21 +39,21 @@ public class Temperature {
 
         private static final String HEALTH_NAME = "vegvisir_temperature_health";
         private static final UUID   HEALTH_UUID = UUID.fromString("907f79c9-762e-481e-b8ec-3e22832f4f66");
-        private static final double MIN_HEALTH = -0.7;
+        private static final double MIN_HEALTH = -0.5;
         private static final double MAX_HEALTH = 0.2;
         private static final double LOWER_HEALTH_B = NEUTRAL_STAT - NEUTRAL_TEMPERATURE * ((NEUTRAL_STAT - MIN_HEALTH) / LOWER_DX);
         private static final double UPPER_HEALTH_B = NEUTRAL_STAT - NEUTRAL_TEMPERATURE * ((MAX_HEALTH - NEUTRAL_STAT) / UPPER_DX);
 
         private static final String SPEED_NAME = "vegvisir_temperature_movespeed";
         private static final UUID   SPEED_UUID = UUID.fromString("e3358d22-95cd-4ca5-b6d7-60d520a9e200");
-        private static final double MIN_SPEED = -0.4;
-        private static final double MAX_SPEED = 0.2;
+        private static final double MIN_SPEED = -0.2;
+        private static final double MAX_SPEED = 0.1;
         private static final double LOWER_SPEED_B = NEUTRAL_STAT - NEUTRAL_TEMPERATURE * ((NEUTRAL_STAT - MIN_SPEED) / LOWER_DX);
         private static final double UPPER_SPEED_B = NEUTRAL_STAT - NEUTRAL_TEMPERATURE * ((MAX_SPEED - NEUTRAL_STAT) / UPPER_DX);
 
         private static final String DAMAGE_NAME = "vegvisir_temperature_damage";
         private static final UUID   DAMAGE_UUID = UUID.fromString("b023a486-3696-4f8d-9d48-d4af88200729");
-        private static final double MIN_DAMAGE = -0.6;
+        private static final double MIN_DAMAGE = -0.3;
         private static final double MAX_DAMAGE = 0.2;
         private static final double LOWER_DAMAGE_B = NEUTRAL_STAT - NEUTRAL_TEMPERATURE * ((NEUTRAL_STAT - MIN_DAMAGE) / LOWER_DX);
         private static final double UPPER_DAMAGE_B = NEUTRAL_STAT - NEUTRAL_TEMPERATURE * ((MAX_DAMAGE - NEUTRAL_STAT) / UPPER_DX);

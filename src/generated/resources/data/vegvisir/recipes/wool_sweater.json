@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "Y": {
+      "item": "vegvisir:wool_yarn"
+    }
+  },
+  "pattern": [
+    "Y Y",
+    "YYY",
+    "YYY"
+  ],
+  "result": {
+    "item": "vegvisir:wool_sweater"
+  },
+  "show_notification": true
+}

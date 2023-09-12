@@ -47,6 +47,8 @@ public class VegvisirItems {
             () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> FISH_OIL = ITEMS.register("fish_oil",
             FishOilItem::new);
+    public static final RegistryObject<Item> RESONANT_CHRYSALIS = ITEMS.register("resonant_chrysalis",
+            () -> new Item(new Item.Properties()));
 
 
     public static void register(IEventBus eventBus) {
