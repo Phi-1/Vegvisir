@@ -7,14 +7,26 @@
     "item.vegvisir.fish_oil": "Fish Oil",
     "item.vegvisir.wool_yarn": "Wool Yarn",
     "item.vegvisir.resonant_chrysalis": "Resonant Chrysalis",
+    "item.vegvisir.hearthessence": "Hearthessence",
 
     "item.vegvisir.wool_sweater": "Wool Sweater",
     "item.vegvisir.knit_cap": "Knit Cap",
     "item.vegvisir.wool_socks": "Wool Socks",
 
+    "item.minecraft.potion.effect.warmth_potion": "Potion of Warmth",
+    "item.minecraft.potion.effect.warmth_potion_long": "Potion of Warmth",
+    "item.minecraft.potion.effect.warmth_potion_strong": "Potion of Warmth",
+    "item.minecraft.splash_potion.effect.warmth_potion": "Splash Potion of Warmth",
+    "item.minecraft.splash_potion.effect.warmth_potion_long": "Splash Potion of Warmth",
+    "item.minecraft.splash_potion.effect.warmth_potion_strong": "Splash Potion of Warmth",
+    "item.minecraft.lingering_potion.effect.warmth_potion": "Lingering Potion of Warmth",
+    "item.minecraft.lingering_potion.effect.warmth_potion_long": "Lingering Potion of Warmth",
+    "item.minecraft.lingering_potion.effect.warmth_potion_strong": "Lingering Potion of Warmth",
+
     "block.vegvisir.spinning_wheel": "Spinning Wheel",
 
     "effect.vegvisir.effect_wet": "Wet",
+    "effect.vegvisir.effect_warmth": "Warmth",
 
     "vegvisir.tooltip.nutrition.meat": "§4Meat",
     "vegvisir.tooltip.nutrition.fish": "§cFish",

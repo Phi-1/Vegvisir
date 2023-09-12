@@ -66,6 +66,13 @@ public class VegvisirRecipes extends RecipeProvider {
             .requires(Items.STICK)
             .unlockedBy("caught_fish", inventoryTrigger(ItemPredicate.Builder.item().of(VegvisirTags.Items.RAW_FISH).build()));
 
+    public static final ShapelessRecipeBuilder HEARTHESSENCE = ShapelessRecipeBuilder.shapeless(RecipeCategory.BREWING, VegvisirItems.HEARTHESSENCE.get(), 2)
+            .requires(VegvisirItems.FISH_OIL.get())
+            .requires(Items.HONEY_BOTTLE)
+            .requires(Items.COCOA_BEANS)
+            .requires(Items.POPPY)
+            .unlockedBy("has_fishoil", inventoryTrigger(ItemPredicate.Builder.item().of(VegvisirItems.FISH_OIL.get()).build()));
+
     public static final ShapelessRecipeBuilder DOUGH = ShapelessRecipeBuilder.shapeless(RecipeCategory.FOOD, VegvisirItems.DOUGH.get(), 2)
             .requires(Items.WHEAT, 7)
             .requires(Items.WATER_BUCKET)

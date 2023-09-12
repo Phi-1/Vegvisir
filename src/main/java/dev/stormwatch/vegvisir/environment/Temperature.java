@@ -26,6 +26,9 @@ public class Temperature {
     public static final double SWEATER_MODIFIER = 5;
     public static final double SOCKS_MODIFIER = 2;
 
+    public static final double WARMTH_EFFECT_MODIFIER = 10;
+    public static final double WARMTH_EFFECT_MODIFIER_STRONG = 15;
+
     public static class Stats {
 
         private static final double MINIMAL_TEMPERATURE = -4;

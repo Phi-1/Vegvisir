@@ -2,6 +2,8 @@ package dev.stormwatch.vegvisir.registry;
 
 import dev.stormwatch.vegvisir.Vegvisir;
 import dev.stormwatch.vegvisir.items.FishOilItem;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ArmorItem;
@@ -38,7 +40,14 @@ public class VegvisirItems {
     public static final RegistryObject<Item> UNCOOKED_PUMKIN_PIE = ITEMS.register("uncooked_pumpkin_pie",
             () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> EYESCREAM = ITEMS.register("eyescream",
-            () -> new Item(new Item.Properties().food(new FoodProperties.Builder().build())));
+            () -> new Item(new Item.Properties().food(new FoodProperties.Builder()
+                    .alwaysEat()
+                    .nutrition(2)
+                    .saturationMod(1)
+                    .effect(() -> new MobEffectInstance(MobEffects.DIG_SPEED, 600, 0), 1)
+                    .effect(() -> new MobEffectInstance(MobEffects.DIG_SPEED, 600, 2), 0.02F)
+                    .effect(() -> new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 600, 2), 0.02F)
+                    .build())));
 
     // Materials
     public static final RegistryObject<Item> WOOL_PATCH = ITEMS.register("wool_patch",
@@ -49,6 +58,11 @@ public class VegvisirItems {
             FishOilItem::new);
     public static final RegistryObject<Item> RESONANT_CHRYSALIS = ITEMS.register("resonant_chrysalis",
             () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> HEARTHESSENCE = ITEMS.register("hearthessence",
+            () -> new Item(new Item.Properties().food(new FoodProperties.Builder()
+                    .alwaysEat()
+                    .effect(() -> new MobEffectInstance(MobEffects.CONFUSION, 200, 0), 1)
+                    .build())));
 
 
     public static void register(IEventBus eventBus) {

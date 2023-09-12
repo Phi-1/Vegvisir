@@ -121,7 +121,13 @@ public class EnvironmentEvents {
             else if (stack.is(VegvisirTags.Items.SOCKS)) clothingTemp += Temperature.SOCKS_MODIFIER;
         }
 
-        double temp = biomeTemp + fireTemp + altitudeTemp + weatherTemp + timeTemp + seasonTemp + clothingTemp;
+        double effectTemp = 0;
+        if (player.hasEffect(VegvisirEffects.WARMTH.get())) {
+            int amplifier = player.getEffect(VegvisirEffects.WARMTH.get()).getAmplifier();
+            effectTemp += amplifier == 0 ? Temperature.WARMTH_EFFECT_MODIFIER : Temperature.WARMTH_EFFECT_MODIFIER_STRONG;
+        }
+
+        double temp = biomeTemp + fireTemp + altitudeTemp + weatherTemp + timeTemp + seasonTemp + clothingTemp + effectTemp;
 
 //        player.displayClientMessage(Component.literal(temp + " C"), true);
         return temp;

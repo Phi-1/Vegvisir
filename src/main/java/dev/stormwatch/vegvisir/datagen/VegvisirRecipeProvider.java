@@ -25,6 +25,6 @@ public class VegvisirRecipeProvider extends RecipeProvider {
         VegvisirRecipes.WOOL_SOCKS.save(writer);
         VegvisirRecipes.WOOL_SWEATER.save(writer);
         VegvisirRecipes.KNIT_CAP.save(writer);
-
+        VegvisirRecipes.HEARTHESSENCE.save(writer);
     }
 }

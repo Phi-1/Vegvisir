@@ -15,9 +15,13 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.Potions;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.event.CreativeModeTabEvent;
 import net.minecraftforge.event.TickEvent;
@@ -40,6 +44,7 @@ import java.util.EnumSet;
 public class Vegvisir {
     // TODO: way to see nutrition and temperature ingame
     // TODO: clothing durability
+    // TODO: warmth potion recipe
 
     public static final String MOD_ID = "vegvisir";
     private static final Logger LOGGER = LogUtils.getLogger();
@@ -80,6 +85,7 @@ public class Vegvisir {
     private void commonSetup(final FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
             VegvisirNetworking.register();
+            registerPotionRecipes();
         });
     }
 
@@ -97,12 +103,19 @@ public class Vegvisir {
             event.accept(VegvisirItems.WOOL_YARN);
             event.accept(VegvisirItems.WOOL_PATCH);
             event.accept(VegvisirItems.FISH_OIL);
+            event.accept(VegvisirItems.HEARTHESSENCE);
         }
         if (event.getTab() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
             event.accept(VegvisirItems.KNIT_CAP);
             event.accept(VegvisirItems.WOOL_SWEATER);
             event.accept(VegvisirItems.WOOL_SOCKS);
         }
+    }
+
+    private void registerPotionRecipes() {
+        BrewingRecipeRegistry.addRecipe(new VegvisirPotionRecipe(VegvisirItems.HEARTHESSENCE.get(), Potions.AWKWARD, VegvisirPotions.WARMTH_POTION.get()));
+        BrewingRecipeRegistry.addRecipe(new VegvisirPotionRecipe(Items.REDSTONE, VegvisirPotions.WARMTH_POTION.get(), VegvisirPotions.WARMTH_POTION_LONG.get()));
+        BrewingRecipeRegistry.addRecipe(new VegvisirPotionRecipe(Items.GLOWSTONE_DUST, VegvisirPotions.WARMTH_POTION.get(), VegvisirPotions.WARMTH_POTION_STRONG.get()));
     }
 
     private void registerCuriosSlots() {
