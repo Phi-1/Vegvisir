@@ -29,6 +29,8 @@ public class WetEffect extends MobEffect {
         this.addAttributeModifier(Attributes.MOVEMENT_SPEED, MOVEMENT_SPEED_ATTRIBUTE_UUID.toString(), MOVEMENT_SPEED_MODIFIER, AttributeModifier.Operation.MULTIPLY_BASE);
         this.addAttributeModifier(Attributes.ATTACK_SPEED, ATTACK_SPEED_ATTRIBUTE_UUID.toString(), ATTACK_SPEED_MODIFIER, AttributeModifier.Operation.MULTIPLY_BASE);
     }
+	
+	// TODO: isDurationEffectTick check for 1 tick left and remove wet status, instead of playerTickEvent
 
     @SubscribeEvent
     public static void onPlayerBreakSpeedEvent(PlayerEvent.BreakSpeed event) {

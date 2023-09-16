@@ -86,7 +86,7 @@ public class VegvisirRecipes extends RecipeProvider {
             .requires(Items.BOWL)
             .unlockedBy("obtained_pumpkin", inventoryTrigger(ItemPredicate.Builder.item().of(Items.PUMPKIN).build()));
 
-    public static final ShapelessRecipeBuilder UNCOOKED_PUMPKIN_PIE = ShapelessRecipeBuilder.shapeless(RecipeCategory.FOOD, VegvisirItems.UNCOOKED_PUMKIN_PIE.get(), 1)
+    public static final ShapelessRecipeBuilder UNCOOKED_PUMPKIN_PIE = ShapelessRecipeBuilder.shapeless(RecipeCategory.FOOD, VegvisirItems.UNCOOKED_PUMKIN_PIE.get(), 2)
             .requires(VegvisirItems.PUMKIN_PIE_BATTER.get())
             .requires(VegvisirItems.DOUGH.get())
             .unlockedBy("obtained_pumpkin_batter", inventoryTrigger(ItemPredicate.Builder.item().of(VegvisirItems.PUMKIN_PIE_BATTER.get()).build()));

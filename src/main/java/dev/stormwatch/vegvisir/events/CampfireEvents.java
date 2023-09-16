@@ -21,6 +21,7 @@ import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 
+// FIXME: this thing lags the game with campfire loading, removed from main class for now
 public class CampfireEvents {
 
     private static int campfireTicks = 0;
@@ -63,18 +64,21 @@ public class CampfireEvents {
 
     // TODO: tick campfires after sleeping, maybe just a set amount regardless of sleeping time
     // TODO: sleeping needs nearby fire
-    @SubscribeEvent
-    public static void onLevelTick(TickEvent.LevelTickEvent event) {
-        Level level = event.level;
-        if (level.isClientSide() || event.phase == TickEvent.Phase.START) return;
-        if (campfireTicks >= campfireTickRate) {
-            LevelCampfireTracker tracker = level.getCapability(LevelCampfireTrackerProvider.LEVEL_CAMPFIRE_TRACKER).orElse(null);
-            if (tracker == null) return;
-            tracker.tickAllCampfires(level, campfireFuelConsumption);
-            campfireTicks -= campfireTickRate;
-        }
-        campfireTicks++;
-    }
+
+    // TODO: this lags the game, probably because it loads chunks for campfires
+//    @SubscribeEvent
+//    public static void onLevelTick(TickEvent.LevelTickEvent event) {
+//        Level level = event.level;
+//        if (level.isClientSide() || event.phase == TickEvent.Phase.START) return;
+          // TODO: use getGameTime
+//        if (campfireTicks >= campfireTickRate) {
+//            LevelCampfireTracker tracker = level.getCapability(LevelCampfireTrackerProvider.LEVEL_CAMPFIRE_TRACKER).orElse(null);
+//            if (tracker == null) return;
+//            tracker.tickAllCampfires(level, campfireFuelConsumption);
+//            campfireTicks -= campfireTickRate;
+//        }
+//        campfireTicks++;
+//    }
 
     private static void addFuelToFire(float amount, CampfireFuelLevel fuelLevel, ItemStack usedItem, Player player) {
         fuelLevel.addFuel(amount);

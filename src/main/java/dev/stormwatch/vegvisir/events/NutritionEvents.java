@@ -20,8 +20,6 @@ import java.util.EnumSet;
 
 public class NutritionEvents {
 
-    // TODO: apply nutrition stats
-
     @SubscribeEvent
     public static void tickPlayerNutrition(TickEvent.PlayerTickEvent event) {
         if (event.side == LogicalSide.CLIENT) return;

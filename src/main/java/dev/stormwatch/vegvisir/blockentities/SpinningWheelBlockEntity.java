@@ -30,8 +30,8 @@ public class SpinningWheelBlockEntity extends BlockEntity implements GeoBlockEnt
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
     // TODO: separate stacks for different colors of wool
-    private static final int WOOL_PER_YARN = 2;
-    private static final int TICKS_PER_YARN = 600;
+    private static final int WOOL_PER_YARN = 4;
+    private static final int TICKS_PER_YARN = 1800;
     private int storedWool = 0;
     private int progress = 0;
     private boolean processing = false;

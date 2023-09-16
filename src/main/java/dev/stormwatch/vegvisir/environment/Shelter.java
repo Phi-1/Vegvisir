@@ -8,9 +8,11 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class Shelter {
+    // TODO: shelter checking is ass in small caves and buildings
+    // TODO: if shelter check encounters one block above player it stops searching, even if there is valid shelter somewhere above it
 
     private static final int maxShelterCheckingHeight = 64;
-    private static final int maxVerticalDistanceFromCenter = 5;
+    private static final int maxVerticalDistanceFromCenter = 9;
 
     public static boolean isValidShelter(BlockState block) {
         return block.getMaterial().isSolid() &&
@@ -28,7 +30,7 @@ public class Shelter {
             BlockState blockState = level.getBlockState(nextPos);
             if (Shelter.isValidShelter(blockState)) {
                 // TODO: player should still be sheltered if only a couple blocks are missing from ring
-                // TODO: update with spiralAround
+                // TODO: update with spiralAround, or findClosestMatch
                 if (!adjacentColumnHasShelter(nextPos.north()       , playerPos.getY(), level)) return false;
                 if (!adjacentColumnHasShelter(nextPos.north().east(), playerPos.getY(), level)) return false;
                 if (!adjacentColumnHasShelter(nextPos.south().east(), playerPos.getY(), level)) return false;
@@ -48,6 +50,7 @@ public class Shelter {
     public static boolean adjacentColumnHasShelter(BlockPos centerPos, int playerY, Level level) {
         int remainder = 0;
         int halfHeight = maxVerticalDistanceFromCenter / 2;
+        // TODO: rework this, at least calc the remainder without an entire for loop
         for (int i = 0; i < halfHeight; i++) {
             centerPos = centerPos.below();
             // stop before player's feet

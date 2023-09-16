@@ -64,8 +64,8 @@ public class EnvironmentEvents {
         }
 
         if (player.level.getGameTime() % PLAYER_TICKRATE == 0) {
-            // TODO: this lags the game, not in new world though? keep an eye on it, might be a memory leak
             boolean wasSheltered = playerEnvironment.isSheltered();
+            // TODO: replace wet state with just effect
             boolean wasWet = playerEnvironment.isWet();
             boolean isSheltered = Shelter.isSheltered(player);
             boolean isWet = player.isInWaterOrRain();

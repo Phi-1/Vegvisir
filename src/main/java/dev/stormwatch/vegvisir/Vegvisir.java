@@ -44,7 +44,7 @@ import java.util.EnumSet;
 public class Vegvisir {
     // TODO: way to see nutrition and temperature ingame
     // TODO: clothing durability
-    // TODO: warmth potion recipe
+    // TODO: SleepFinishedTimeEvent for campfires
 
     public static final String MOD_ID = "vegvisir";
     private static final Logger LOGGER = LogUtils.getLogger();
@@ -70,7 +70,7 @@ public class Vegvisir {
         MinecraftForge.EVENT_BUS.register(CapabilityEvents.class);
         MinecraftForge.EVENT_BUS.register(EnvironmentEvents.class);
         MinecraftForge.EVENT_BUS.register(NutritionEvents.class);
-        MinecraftForge.EVENT_BUS.register(CampfireEvents.class);
+//        MinecraftForge.EVENT_BUS.register(CampfireEvents.class); FIXME
         MinecraftForge.EVENT_BUS.register(MiscEvents.class);
     }
 

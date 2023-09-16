@@ -1,4 +1,4 @@
-// 1.19.4	2023-09-12T15:30:43.6187793	Recipes
+// 1.19.4	2023-09-13T18:55:35.0611665	Recipes
 b5bc6852b0c6f385e4547251f06cea2274a7384f data/minecraft/advancements/recipes/food/bread.json
 a271b151e1b2db02539163ced5560b4e8e0a4929 data/minecraft/advancements/recipes/food/pumpkin_pie.json
 ae82f18997867dff198597ee2c95a6b55bd88884 data/minecraft/recipes/bread.json
@@ -20,6 +20,6 @@ d171c7b397038a40fe3e8cbb5b989068c838b5d4 data/vegvisir/recipes/fish_oil.json
 ab58aeacab7fcd7664f7b825141b79a69e2cd8ca data/vegvisir/recipes/pumpkin_pie_batter.json
 f688aec8d30e2afb1c97e85925bb61e148fc832b data/vegvisir/recipes/resonant_chrysalis.json
 8eb2df7e227e705bba49d2ab27487b2f3bd65d1a data/vegvisir/recipes/spinning_wheel.json
-8e4f7de9420e9501fc0f3bb10796ed548efac26f data/vegvisir/recipes/uncooked_pumpkin_pie.json
+b18ecb648748a6faa71b01cc13ca9a3bcf7bc70e data/vegvisir/recipes/uncooked_pumpkin_pie.json
 f4e3c8c0912cc481764a54bb2837b7fdd81ce5d3 data/vegvisir/recipes/wool_socks.json
 9b3bad7cb9f998a8c16471aac540d7643e956eb7 data/vegvisir/recipes/wool_sweater.json

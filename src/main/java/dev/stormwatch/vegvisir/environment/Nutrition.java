@@ -43,7 +43,6 @@ public class Nutrition {
     }
 
     public static class Stats {
-        // TODO
         // buffs/debuffs attack damage, attack speed, max health, movespeed
         private static final double MINIMAL_NUTRITION_QUOTIENT = 0;
         private static final double NEUTRAL_NUTRITION_QUOTIENT = 0.6;

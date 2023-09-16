@@ -8,6 +8,7 @@
         "minecraft:honey_bottle",
         "minecraft:glow_berries",
         "minecraft:sweet_berries",
-        "minecraft:chorus_fruit"
+        "minecraft:chorus_fruit",
+        "#forge:fruits"
     ]
 }
